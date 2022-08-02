@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcForum.Data;
 
@@ -11,9 +12,10 @@ using MvcForum.Data;
 namespace MvcForum.Migrations
 {
     [DbContext(typeof(PostContext))]
-    partial class PostContextModelSnapshot : ModelSnapshot
+    [Migration("20220731193523_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace MvcForum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FullImageName")
+                    b.Property<string>("FullImagePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("HasImage")
@@ -42,6 +44,9 @@ namespace MvcForum.Migrations
 
                     b.Property<int>("IdOnBoard")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsOP")
                         .HasColumnType("bit");
@@ -58,14 +63,11 @@ namespace MvcForum.Migrations
                     b.Property<int>("ThreadId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ThumbImageName")
+                    b.Property<string>("ThumbImagePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("UserFileName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserIP")
                         .IsRequired()

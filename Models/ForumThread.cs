@@ -1,6 +1,8 @@
-﻿namespace MvcForum.Models
+﻿using System.Collections;
+
+namespace MvcForum.Models
 {
-    public class ForumThread
+    public class ForumThread : IEnumerable<Post>
     {
         public int Id { get; set; }
         public List<Post> Posts { get; set; }
@@ -36,6 +38,19 @@
                 }
             }
             return last;
+        }
+
+        public IEnumerator<Post> GetEnumerator()
+        {
+            foreach (var post in Posts)
+            {
+                yield return post;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         //possible: add a "generateDisplayThread" method to only enable controller to only pass needed posts to the view

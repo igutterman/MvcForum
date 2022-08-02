@@ -3,6 +3,7 @@ using MvcForum.Models;
 using System.Diagnostics;
 using MvcForum.Data;
 using MvcForum.Models;
+using MvcForum.ViewModels;
 
 namespace MvcForum.Controllers
 {
@@ -10,14 +11,25 @@ namespace MvcForum.Controllers
     {
 
         private readonly PostContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public IntController(PostContext context)
+        public IntController(PostContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
+
+        //Trying to turn off caching in browser
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        [Route("/{board}")]
         public IActionResult Index()
         {
+
+            //Get board from url. Use board in db query
+
+            Console.WriteLine(Request.Path);
+
             using (_context)
             {
 
@@ -58,26 +70,71 @@ namespace MvcForum.Controllers
                 foreach (ForumThread thread in sortedThreads)
                 {
                     thread.sortPostsByTimestamp();
-                }    
+                }
 
-                ViewData["threads"] = sortedThreads;
+                var threadsView = new ForumPageViewModel(_env.WebRootPath)
+                {
+                    Threads = sortedThreads
+                };
+
+                //ViewData["threads"] = sortedThreads;
 
 
 
-                return View("~/Views/Boards/Int.cshtml");
+                return View("~/Views/Boards/Int.cshtml", threadsView);
 
             }
             
         }
 
-        [Route("/int/{id}")]
+
+        [Route("/{board}/{id}")]
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Thread()
         {
-            //ViewData["cringe"] = "You posted cringe";
+
+            //Get board from url. Use board in db query
 
 
+            Console.WriteLine("int thread controller action");
+            Console.WriteLine(Request.Path);
 
-            return View("~/Views/Boards/IntThread.cshtml");
+            string threadID = Request.Path;
+            int pos = threadID.IndexOf('/', threadID.IndexOf('/') + 1);
+            threadID = threadID.Substring(pos, threadID.Length - pos).Trim('/');
+            Console.WriteLine("here");
+            Console.WriteLine(threadID);
+
+            using (_context)
+            {
+                var posts = from post in _context.Post
+                            where post.ThreadId == Int32.Parse(threadID)  //route id
+                            select post;
+
+
+                ForumThread thread = new ForumThread();
+
+                foreach (Post post in posts) {
+                    thread.addPost(post);
+                }
+
+                thread.sortPostsByTimestamp();
+
+                ThreadViewModel threadView = new ThreadViewModel(_env.WebRootPath)
+                {
+                    Thread = thread
+                };
+
+                return View("~/Views/Boards/IntThread.cshtml", threadView);
+
+            }
         }
+
+
+
+
+
+
+
     }
 }

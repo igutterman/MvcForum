@@ -1,22 +1,223 @@
-﻿@{
+﻿@using MvcForum.ViewModels
+@using SixLabors.ImageSharp
+@using MvcForum.Models
+
+
+@model ForumPageViewModel
+
+@{
     ViewData["Title"] = "/int/";
+    Layout = null;
+    
 }
 
-<div class="text-center">
-    <h1 class="display-4">/int/</h1>
-    @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
+@*
+@section styles{
+    <link rel="Stylesheet" href="@Href("~/css/BoardIndex.css")" />
+}
+*@
+
+
+<head>
+    <title>/int/</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="Stylesheet" href="@Href("~/css/BoardIndex.css")" />
+</head>
+
+<body>
+
+<div class="BoardName">
+    <h1>/int/</h1>
+</div>
+
+@{
+    int imageCounter = 0;
+ }
+
+
+<p id="demo"></p>
+
+<p id ="demo1"</p>
+<p id = "demo2"></p>
+<p id = "demo3"></p>
+
+@*
+<p id = "demo4"></p>
+<p id = "demo4"></p>
+<p id = "demo4"></p>
+*@
+
+<div class = 'Threads'>
+@foreach (var thread in Model.Threads)
+    {
+        Post OPpost = thread.Posts[0];
+        string imagePath = Model.WebRootPath + "/images/" + OPpost.FullImageName;
+        string imageFileName = System.IO.Path.GetFileName(imagePath);
+        using (var image = SixLabors.ImageSharp.Image.Load(imagePath))
+        {
+
+            double FileSize = new System.IO.FileInfo(imagePath).Length;
+            FileSize *= 0.00097656;
+            FileSize = Math.Round(FileSize, 2);
+
+
+
+            <div class = 'Thread'>
+                <div class = 'OpPost'>
+                    <div class = 'OpPicInfo'>
+                        <span>File: </span><span class = 'OpPicLink'><a href = @imageFileName>@imageFileName</a></span>
+                        <span>@FileSize.ToString()KB, @image.Width x @image.Height</span>
+                    </div>
+
+                    <div class = 'OpPic'>
+                        <img id = '@imageCounter.ToString()' src='/images/@OPpost.ThumbImageName' data-isop = '1' onclick='resizeImage(event)'>
+                        @{
+                            imageCounter++;
+                            Console.WriteLine("incremented imageCounter");
+                            Console.WriteLine($"imageCounter: {imageCounter}");
+                        }
+                    </div>
+                    <div class = 'PostInfo'>
+                        @*No Name field in Post model*@
+                        <span class = 'PosterName'>Anonymous</span>
+                        <span class = 'Timestamp'>@OPpost.Timestamp.ToString()</span>
+                    </div>
+                    <div class = 'PostText'>
+                        <p>@OPpost.Text</p>
+                    </div>
+                </div>
+
+
+
+
+
+                @foreach (var post in thread.Posts)
+                if (!post.IsOP)
+                {
+                        
+                    {
+                        if (post.HasImage)
+                        {
+                            imagePath = Model.WebRootPath + "/images/" + post.FullImageName;
+                            imageFileName = System.IO.Path.GetFileName(imagePath);
+                            using (var image1 = SixLabors.ImageSharp.Image.Load(imagePath))
+                            {
+                                FileSize = new System.IO.FileInfo(imagePath).Length;
+                                FileSize *= 0.00097656;
+                                FileSize = Math.Round(FileSize, 2);
+                        
+
+                            <div class = 'ImageReplyPost'>
+                                <div class = 'PostInfo'>
+                                    <span class = 'PosterName'>Anonymous</span>
+                                    <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
+                                </div>
+                                <div class = 'ReplyImageInfo'>
+                                    <span>File: </span><span class = 'ReplyPicLink'><a href = @imageFileName>@imageFileName</a></span>
+                                    <span>@FileSize.ToString()KB, @image.Width x @image.Height</span>
+                                </div>
+                                <div class = 'ReplyImageTextContainer'>
+                                    <div class = 'ReplyImage'>
+                                        <img id = '@imageCounter.ToString()' src = '/images/@post.ThumbImageName' data-isop = '0' onclick = 'resizeImage(event)'>
+                                            @{
+                                                imageCounter++;
+                                                Console.WriteLine("incremented imageCounter");
+                                                Console.WriteLine($"imageCounter: {imageCounter}");
+                                            }
+                                    </div>
+                                    <div class = 'PostText'>
+                                        @post.Text;
+                                    </div>
+
+                                </div>
+                            </div>
+                            }
+                        } else
+                        {
+                            <div class = 'ReplyPost'>
+                                <div class = 'PostInfo'>
+                                    <span class = 'PosterName'>Anonymous</span>
+                                    <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
+                                </div>
+                                <div class = 'PostText'>
+                                    <p>@post.Text;</p>
+                                </div>
+
+                            </div>
+                        }
+                    }
+                }
+
+        </div>
+        }
+    }
 </div>
 
 
+</body>
 
-@foreach (var thread in ViewData["threads"] as List<ForumThread>)
-{
-    @foreach (var post in thread.Posts)
-    {
-        <p>@post.Subject</p>
-        <p>@post.Text</p>
-    }
 
+
+@*
+@section scripts{
 }
 
+*@
+
+<script>
+    var fullPaths = [];
+    var thumbPaths = [];
+
+    @foreach (ForumThread thread in Model.Threads) {
+        @foreach (Post post in thread) {
+            if (post.HasImage) {
+                <text>
+                    fullPaths.push('@post.FullImageName');
+                    thumbPaths.push('@post.ThumbImageName');
+
+                        
+                </text>
+
+            }
+        }
+    }
+</script>
+
+<script>
+
+    document.getElementById("demo1").innerHTML = "Fullpath: " + fullPaths[0] + ", thumbpath: " + thumbPaths[0];
+    document.getElementById("demo2").innerHTML = "Fullpath: " + fullPaths[1] + ", thumbpath: " + thumbPaths[1];
+    document.getElementById("demo3").innerHTML = "Fullpath: " + fullPaths[2] + ", thumbpath: " + thumbPaths[2];
+    document.getElementById("demo4").innerHTML = "Fullpath: " + fullPaths[3] + ", thumbpath: " + thumbPaths[3];
+    document.getElementById("demo5").innerHTML = "Fullpath: " + fullPaths[4] + ", thumbpath: " + thumbPaths[4];
+    document.getElementById("demo6").innerHTML = "Fullpath: " + fullPaths[5] + ", thumbpath: " + thumbPaths[5];
+
+</script>
+
+
+<script>
+    @*integrate data-isop from img tags *@
+    function resizeImage(event) { 
+        var x = event.target;
+        //change this to use hashmap?
+        document.getElementById("demo").innerHTML = "Fullpath: " + fullPaths[x.id] + ", thumbpath: " + thumbPaths[x.id];
+
+        var fullSize = fullPaths[x.id];
+        var thumbSize = thumbPaths[x.id];
+
+        
+        var image = event.target;
+        var isOP = true;
+
+        if (image.getAttribute("src") === thumbSize) {
+            isOP = false;
+        }
+
+        if (isOP) {
+            image.
+        }
+          
+
+    }
+</script>
 

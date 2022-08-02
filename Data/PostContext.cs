@@ -17,5 +17,14 @@ namespace MvcForum.Data
         }
 
         public DbSet<Models.Post> Post { get; set;}
+
+
+
+        //Composite primary key
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Post>()
+        //        .HasKey(x => new { x.Id, x.Board });
+        //}
     }
 }
