@@ -112,8 +112,8 @@ namespace MvcForum.Data
                 Post = post1,
                 UserFileName = "lol.jpg",
                 Extension = ".jpg",
-                FullFileName = "1f.jpg",
-                ThumbFileName = "1t.jpg"
+                FullFileName = "1f",
+                ThumbFileName = "1t"
 
             };
 
@@ -124,8 +124,8 @@ namespace MvcForum.Data
                 Post = post2,
                 UserFileName = "lol.jpg",
                 Extension = ".jpg",
-                FullFileName = "1f.jpg",
-                ThumbFileName = "1t.jpg"
+                FullFileName = "1f",
+                ThumbFileName = "1t"
 
             };
 
@@ -136,8 +136,8 @@ namespace MvcForum.Data
                 Post = post5,
                 UserFileName = "lol.jpg",
                 Extension = ".jpg",
-                FullFileName = "1f.jpg",
-                ThumbFileName = "1t.jpg"
+                FullFileName = "1f",
+                ThumbFileName = "1t"
 
             };
 
@@ -148,8 +148,8 @@ namespace MvcForum.Data
                 Post = post7,
                 UserFileName = "lol.jpg",
                 Extension = ".jpg",
-                FullFileName = "1f.jpg",
-                ThumbFileName = "1t.jpg"
+                FullFileName = "1f",
+                ThumbFileName = "1t"
 
             };
 

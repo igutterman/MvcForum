@@ -1,7 +1,7 @@
 ﻿@using MvcForum.ViewModels
 @using SixLabors.ImageSharp
 @using MvcForum.Models
-
+@using System.Web;
 
 @model ForumPageViewModel
 
@@ -37,15 +37,21 @@
 
 <p id="demo"></p>
 
+@*
 <p id ="demo1"</p>
 <p id = "demo2"></p>
 <p id = "demo3"></p>
 
-@*
+
 <p id = "demo4"></p>
 <p id = "demo4"></p>
 <p id = "demo4"></p>
 *@
+
+<partial name="~/Views/Shared/_PostingForm.cshtml" />
+
+
+
 
 <div class = 'Threads'>
 @foreach (var thread in Model.Threads)
@@ -55,7 +61,7 @@
         Console.WriteLine($"Oppost ID: {OPpost.Id}");
         Console.WriteLine($"OpPost File: {OPpost.Files[0].FullFileName}");
 
-        string imagePath = Model.WebRootPath + "/images/" + OPpost.Files[0].FullFileName;
+        string imagePath = Model.WebRootPath + "/images/" + OPpost.Files[0].FullFileName + OPpost.Files[0].Extension;
         string imageFileName = System.IO.Path.GetFileName(imagePath);
         using (var image = SixLabors.ImageSharp.Image.Load(imagePath))
         {
@@ -74,7 +80,7 @@
                     </div>
 
                     <div class = 'OpPic'>
-                        <img id = '@imageCounter.ToString()' src='/images/@OPpost.Files[0].ThumbFileName' data-isop = '1' onclick='resizeImage(event)'>
+                        <img id = '@imageCounter.ToString()' src='/images/@OPpost.Files[0].ThumbFileName@OPpost.Files[0].Extension' data-isop = '1' data-expanded = '0' onclick='resizeImage(event)'>
                         @{
                             imageCounter++;
                             Console.WriteLine("incremented imageCounter");
@@ -83,12 +89,18 @@
                     </div>
                     <div class = 'PostInfo'>
                         @*No Name field in Post model*@
+                        <span class = 'PostSubject'>@OPpost.Subject</span>
                         <span class = 'PosterName'>Anonymous</span>
                         <span class = 'Timestamp'>@OPpost.Timestamp.ToString()</span>
+                        <span class = 'PostNumber'>@OPpost.IdOnBoard</span>
+                        <span class = 'LinkToThread'><a href = @OPpost.Board/@OPpost.ThreadId>[Reply]</a></span>
                     </div>
                     <div class = 'PostText'>
-                        <p>@OPpost.Text</p>
+                        @Html.Raw(HttpUtility.HtmlEncode(OPpost.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
                     </div>
+
+
+
                 </div>
 
 
@@ -102,27 +114,35 @@
                     {
                         if (post.HasImage)
                         {
-                            imagePath = Model.WebRootPath + "/images/" + post.Files[0].FullFileName;
+
+                            imagePath = Model.WebRootPath + "/images/" + post.Files[0].FullFileName + post.Files[0].Extension;
                             imageFileName = System.IO.Path.GetFileName(imagePath);
                             using (var image1 = SixLabors.ImageSharp.Image.Load(imagePath))
                             {
+
+
                                 FileSize = new System.IO.FileInfo(imagePath).Length;
                                 FileSize *= 0.00097656;
                                 FileSize = Math.Round(FileSize, 2);
-                        
+
 
                             <div class = 'ImageReplyPost'>
+
                                 <div class = 'PostInfo'>
+                                    <span class = 'PostSubject'>@post.Subject</span>
                                     <span class = 'PosterName'>Anonymous</span>
                                     <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
                                 </div>
                                 <div class = 'ReplyImageInfo'>
+
                                     <span>File: </span><span class = 'ReplyPicLink'><a href = @imageFileName>@imageFileName</a></span>
                                     <span>@FileSize.ToString()KB, @image.Width x @image.Height</span>
                                 </div>
                                 <div class = 'ReplyImageTextContainer'>
+
+
                                     <div class = 'ReplyImage'>
-                                        <img id = '@imageCounter.ToString()' src = '/images/@post.Files[0].ThumbFileName' data-isop = '0' onclick = 'resizeImage(event)'>
+                                        <img id = '@imageCounter.ToString()' src = '/images/@post.Files[0].ThumbFileName@post.Files[0].Extension' data-isop = '0' data-expanded = '0' onclick = 'resizeImage(event)'>
                                             @{
                                                 imageCounter++;
                                                 Console.WriteLine("incremented imageCounter");
@@ -130,7 +150,9 @@
                                             }
                                     </div>
                                     <div class = 'PostText'>
-                                        @post.Text;
+                                        
+                                        @Html.Raw(HttpUtility.HtmlEncode(post.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
+
                                     </div>
 
                                 </div>
@@ -138,55 +160,61 @@
                             }
                         } else
                         {
+
                             <div class = 'ReplyPost'>
                                 <div class = 'PostInfo'>
+                                    <span class = 'PostSubject'>@post.Subject</span>
                                     <span class = 'PosterName'>Anonymous</span>
                                     <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
                                 </div>
                                 <div class = 'PostText'>
-                                    <p>@post.Text;</p>
+                                    @Html.Raw(HttpUtility.HtmlEncode(post.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
                                 </div>
 
                             </div>
                         }
                     }
                 }
-
         </div>
         }
     }
 </div>
 
+<p id="msg"></p>
 
 </body>
 
-
-
-@*
-@section scripts{
+@{
+    Console.WriteLine("reached end of int.cshtml");
 }
 
-*@
+
 
 <script>
+
     var fullPaths = [];
     var thumbPaths = [];
+
+    
 
     @foreach (ForumThread thread in Model.Threads) {
         @foreach (Post post in thread) {
             if (post.HasImage) {
                 <text>
-                    fullPaths.push('@post.Files[0].FullFileName');
-                    thumbPaths.push('@post.Files[0].ThumbFileName');
 
-                        
+                    fullPaths.push('@post.Files[0].FullFileName@post.Files[0].Extension');
+                    thumbPaths.push('@post.Files[0].ThumbFileName@post.Files[0].Extension');
                 </text>
 
             }
         }
     }
+
 </script>
 
+
+
+@*
 <script>
 
     document.getElementById("demo1").innerHTML = "Fullpath: " + fullPaths[0] + ", thumbpath: " + thumbPaths[0];
@@ -198,9 +226,10 @@
 
 </script>
 
+*@
 
 <script>
-    @*integrate data-isop from img tags *@
+
     function resizeImage(event) { 
         var x = event.target;
         //change this to use hashmap?
@@ -211,16 +240,16 @@
 
         
         var image = event.target;
-        var isOP = true;
+        
 
-        if (image.getAttribute("src") === thumbSize) {
-            isOP = false;
+        if (image.getAttribute("data-expanded") === "0") {
+            image.src = '/images/' + fullPaths[x.id];
+            image.dataset.expanded = "1";
+        } else {
+            image.src = '/images/' + thumbPaths[x.id];
+            image.dataset.expanded = "0";
         }
 
-        if (isOP) {
-            image.
-        }
-          
 
     }
 </script>

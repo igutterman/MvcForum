@@ -1,8 +1,9 @@
 ﻿<!DOCTYPE html>
 
-@using MvcForum.ViewModels
-@using SixLabors.ImageSharp
-@using MvcForum.Models
+@using MvcForum.ViewModels;
+@using SixLabors.ImageSharp;
+@using MvcForum.Models;
+@using System.Web;
 
 
 
@@ -32,52 +33,14 @@
         int imageCounter = 0;
     }
 
-    <div class="PostForm">
-
-        @*fix so that name, type etc are in the same order*@
-        <form enctype="multipart/form-data" asp-controller="Post" asp-action="NewPost" method="post" id="PostingForm">
-
-            <table>
-                <tr class="SubjectSubmitRow">
-                    <td id="SubjectCell"><input name="Subject" type="text" maxlength="80" placeholder="Subject" /></td>
-
-                    <td id="SubmitButtonCell"><input type="Submit" id="SubmitForm" value="Submit"/></td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="SageBox" id="SageLabel">Sage</label>
-                        <input type="checkbox" id="SageBox" name="SageBox"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                    <textarea form="PostingForm" name="PostText" maxlength="5000" placeholder="Enter text here..."></textarea>
-                    </td>
-                </tr>
-                <tr>
-                    <td><input name="file" type="file" id="FileSelector"/></td>
-                
-                </tr>
-
-                <input name="current_url" type="hidden"  value="@Context.Request.Path" />
-
-
-
-
-            </table>
-
-        </form>
-
-        
-
-    </div>
+    <partial name="~/Views/Shared/_PostingForm.cshtml" />
 
 
     <div class="Thread">
 
         @{
             Post OPpost = Model.Thread.Posts[0];
-            string imagePath = Model.WebRootPath + "/images/" + OPpost.Files[0].FullFileName;
+            string imagePath = Model.WebRootPath + "/images/" + OPpost.Files[0].FullFileName + OPpost.Files[0].Extension;
             string imageFileName = System.IO.Path.GetFileName(imagePath);
             using (var image = SixLabors.ImageSharp.Image.Load(imagePath))
             {
@@ -92,7 +55,7 @@
                     </div>
 
                     <div class = 'OpPic'>
-                        <img id = '@imageCounter.ToString()' src='/images/@OPpost.Files[0].ThumbFileName' data-isop = '1' onclick='resizeImage(event)'>
+                        <img id = '@imageCounter.ToString()' src='/images/@OPpost.Files[0].ThumbFileName@OPpost.Files[0].Extension' data-isop = '1' onclick='resizeImage(event)'>
                         @{
                             imageCounter++;
                             Console.WriteLine("incremented imageCounter");
@@ -101,11 +64,12 @@
                     </div>
                     <div class = 'PostInfo'>
                         @*No Name field in Post model*@
+                        <span class = 'PostSubject'>@OPpost.Subject</span>
                         <span class = 'PosterName'>Anonymous</span>
                         <span class = 'Timestamp'>@OPpost.Timestamp.ToString()</span>
                     </div>
                     <div class = 'PostText'>
-                        <p>@OPpost.Text</p>
+                        @Html.Raw(HttpUtility.HtmlEncode(OPpost.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
                     </div>
                 </div>
 
@@ -117,7 +81,7 @@
                     {
                         if (post.HasImage)
                         {
-                            imagePath = Model.WebRootPath + "/images/" + post.Files[0].FullFileName;
+                            imagePath = Model.WebRootPath + "/images/" + post.Files[0].FullFileName + post.Files[0].Extension;
                             imageFileName = System.IO.Path.GetFileName(imagePath);
                             using (var image1 = SixLabors.ImageSharp.Image.Load(imagePath))
                             {
@@ -128,6 +92,7 @@
 
                             <div class = 'ImageReplyPost'>
                                 <div class = 'PostInfo'>
+                                    <span class = 'PostSubject'>@OPpost.Subject</span>
                                     <span class = 'PosterName'>Anonymous</span>
                                     <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
                                 </div>
@@ -137,7 +102,7 @@
                                 </div>
                                 <div class = 'ReplyImageTextContainer'>
                                     <div class = 'ReplyImage'>
-                                        <img id = '@imageCounter.ToString()' src = '/images/@post.Files[0].ThumbFileName' data-isop = '0' onclick = 'resizeImage(event)'>
+                                        <img id = '@imageCounter.ToString()' src = '/images/@post.Files[0].ThumbFileName@OPpost.Files[0].Extension' data-isop = '0' onclick = 'resizeImage(event)'>
                                             @{
                                                 imageCounter++;
                                                 Console.WriteLine("incremented imageCounter");
@@ -145,7 +110,7 @@
                                             }
                                     </div>
                                     <div class = 'PostText'>
-                                        @post.Text;
+                                        @Html.Raw(HttpUtility.HtmlEncode(post.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
                                     </div>
 
                                 </div>
@@ -155,11 +120,12 @@
                         {
                             <div class = 'ReplyPost'>
                                 <div class = 'PostInfo'>
+                                    <span class = 'PostSubject'>@OPpost.Subject</span>
                                     <span class = 'PosterName'>Anonymous</span>
                                     <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
                                 </div>
                                 <div class = 'PostText'>
-                                    <p>@post.Text;</p>
+                                    @Html.Raw(HttpUtility.HtmlEncode(post.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
                                 </div>
 
                             </div>

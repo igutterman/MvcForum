@@ -27,6 +27,8 @@ namespace MvcForum.Data
                 .WithOne(e => e.Post);
         }
 
+        
+
         //Composite primary key
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{

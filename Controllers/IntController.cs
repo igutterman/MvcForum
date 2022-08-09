@@ -30,63 +30,61 @@ namespace MvcForum.Controllers
 
             Console.WriteLine(Request.Path);
 
-            using (_context)
+
+            var posts = _context.Post
+                        .Include(post => post.Files)
+                        .ToList();
+
+            //List<int> threadIDs = new List<int>();
+
+            //List<ForumThread> threads = new List<ForumThread>();
+
+            Dictionary<int, ForumThread> threads = new Dictionary<int, ForumThread>();
+
+
+
+            foreach (Post post in posts)
             {
-
-                
-
-                var posts = _context.Post
-                            .Include(post => post.Files)
-                            .ToList();
-
-                //List<int> threadIDs = new List<int>();
-
-                //List<ForumThread> threads = new List<ForumThread>();
-
-                Dictionary<int, ForumThread> threads = new Dictionary<int, ForumThread>();
-
-
-
-                foreach (Post post in posts)
+                if (!threads.ContainsKey(post.ThreadId))
                 {
-                    if (!threads.ContainsKey(post.ThreadId))
-                    {
-                        threads.Add(post.ThreadId, new ForumThread(post));
-                    } else
-                    {
-                        threads[post.ThreadId].addPost(post);
-                    }
-
+                    threads.Add(post.ThreadId, new ForumThread(post));
+                } else
+                {
+                    threads[post.ThreadId].addPost(post);
                 }
-                //threads need to be sorted by last post time
-
-                //https://stackoverflow.com/questions/7198724/sorting-a-dictionary-by-value-which-is-an-object-with-a-datetime
-                
-                List<ForumThread> sortedThreads = new List<ForumThread>();
-
-                foreach (KeyValuePair<int, ForumThread> thread in threads.OrderBy(x => x.Value.getLastPostTime()))
-                {
-                    sortedThreads.Add(thread.Value);
-                }
-                
-                
-                foreach (ForumThread thread in sortedThreads)
-                {
-                    thread.sortPostsByTimestamp();
-                }
-
-                var threadsView = new ForumPageViewModel(_env.WebRootPath)
-                {
-                    Threads = sortedThreads
-                };
-
-                //ViewData["threads"] = sortedThreads;
-
-
-
-                return View("~/Views/Boards/Int.cshtml", threadsView);
 
             }
+
+
+            //threads need to be sorted by last post time
+
+            //https://stackoverflow.com/questions/7198724/sorting-a-dictionary-by-value-which-is-an-object-with-a-datetime
+                
+            List<ForumThread> sortedThreads = new List<ForumThread>();
+
+            foreach (KeyValuePair<int, ForumThread> thread in threads.OrderByDescending(x => x.Value.getLastPostTime()))
+            {
+                sortedThreads.Add(thread.Value);
+            }
+                
+                
+            foreach (ForumThread thread in sortedThreads)
+            {
+                thread.sortPostsByTimestamp();
+            }
+
+            var threadsView = new ForumPageViewModel(_env.WebRootPath)
+            {
+                Threads = sortedThreads
+            };
+
+            //ViewData["threads"] = sortedThreads;
+
+
+
+            return View("~/Views/Boards/Int.cshtml", threadsView);
+
+
             
         }
 
@@ -106,11 +104,12 @@ namespace MvcForum.Controllers
             int pos = threadID.IndexOf('/', threadID.IndexOf('/') + 1);
             threadID = threadID.Substring(pos, threadID.Length - pos).Trim('/');
             Console.WriteLine("here");
-            Console.WriteLine(threadID);
+            Console.WriteLine($"ThreadID : {threadID}");
 
             using (_context)
             {
                 var posts = _context.Post
+
                             .Where(post => post.ThreadId == Int32.Parse(threadID))
                             .Include(post => post.Files)
                             .ToList();

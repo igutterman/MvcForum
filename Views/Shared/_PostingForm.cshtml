@@ -1,0 +1,36 @@
+﻿
+
+<div class="PostForm">
+
+    @*fix so that name, type etc are in the same order*@
+    <form enctype="multipart/form-data" asp-controller="Post" asp-action="NewPost" method="post" id="PostingForm">
+
+        <table>
+            <tr class="SubjectSubmitRow">
+                <td id="SubjectCell"><input name="Subject" type="text" maxlength="80" placeholder="Subject" /></td>
+
+                <td id="SubmitButtonCell"><input type="Submit" id="SubmitForm" value="Submit"/></td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="SageBox" id="SageLabel">Sage</label>
+                    <input type="checkbox" id="SageBox" name="SageBox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <textarea form="PostingForm" name="PostText" maxlength="5000" placeholder="Enter text here..."></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td><input name="file" type="file" id="FileSelector"/></td>
+                
+            </tr>
+
+            <input name="current_url" type="hidden"  value="@Context.Request.Path" />
+
+        </table>
+
+    </form>
+
+</div>

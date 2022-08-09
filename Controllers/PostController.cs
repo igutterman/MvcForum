@@ -38,6 +38,67 @@ namespace MvcForum.Controllers
         [Route("/Post/AddPost")]
         public async Task<IActionResult> NewPost(IFormFile file)
         {
+
+
+            //Gets board from request url (logic handles index and thread urls)
+
+            string Board;
+            bool isOP;
+            string url = HttpContext.Request.Form["current_url"].ToString();
+            int ThreadId = 0;
+
+            if (url.Count(f => f == '/') > 1)
+            {
+
+                //Console.WriteLine(url.Substring(1));
+
+                //Board = url.Substring(1, url.IndexOf('/', url.IndexOf('/'))).ToLower();
+
+                //Console.WriteLine("index of second '/':");
+                int SecondSlash = url.IndexOf('/', url.IndexOf('/') + 1);
+                Board = url.Substring(1, SecondSlash - 1).ToLower();
+
+                Console.WriteLine($"Board: {Board}");
+
+                //is the second slash the last char in the url? 
+                Console.WriteLine($"url length: {url.Length}");
+                Console.WriteLine($"second slash index: {SecondSlash}");
+
+                if (url.Length > SecondSlash + 1)
+                {
+
+                    isOP = false;
+                }
+                else
+                {
+                    isOP = true;
+                }
+
+                if (!isOP)
+                {
+                    ThreadId = Int32.Parse(url.Substring(SecondSlash + 1).Trim('/'));
+                    Console.WriteLine($"ThreadID: {ThreadId}");
+                }
+
+
+            }
+            else
+            {
+                isOP = true;
+                Board = url.Substring(1).ToLower();
+            }
+
+            //if op-post, check it has file
+            if (isOP)
+            {
+                if (file == null)
+                {
+                    Console.WriteLine("New threads must have a file");
+                    return View("~/Views/Shared/Error.cshtml");
+                }
+            }
+
+
             //var headers = Request.Headers;
 
             //var settings = _config["CustomConfig"];
@@ -58,7 +119,7 @@ namespace MvcForum.Controllers
             string storageFileName = null;
             //string extension = null;
             string ThumbFileName = null;
-            int ThreadId = 0;
+            
 
             UploadFile uploadFile = null;
 
@@ -66,7 +127,7 @@ namespace MvcForum.Controllers
 
                 HasFile = true;
 
-                //uploadFile = new UploadFile();
+                uploadFile = new UploadFile();
                 //Validate file type
 
                 userFileName = file.FileName;
@@ -161,7 +222,7 @@ namespace MvcForum.Controllers
             Console.WriteLine($"User IP: {ip}");
 
 
-            string url = HttpContext.Request.Form["current_url"].ToString();
+            
 
             //process post text to preserve line breaks
             string PostText = HttpContext.Request.Form["PostText"].ToString();
@@ -186,48 +247,7 @@ namespace MvcForum.Controllers
 
 
 
-            //Gets board from request url (logic handles index and thread urls)
-            
-            string Board;
-            bool isOP;
-            
-            if (url.Count(f => f == '/') > 1)
-            {
 
-                //Console.WriteLine(url.Substring(1));
-
-                //Board = url.Substring(1, url.IndexOf('/', url.IndexOf('/'))).ToLower();
-                
-                //Console.WriteLine("index of second '/':");
-                int SecondSlash = url.IndexOf('/', url.IndexOf('/') + 1);
-                Board = url.Substring(1, SecondSlash - 1).ToLower();
-
-                Console.WriteLine($"Board: {Board}");
-
-                //is the second slash the last char in the url? 
-                Console.WriteLine($"url length: {url.Length}");
-                Console.WriteLine($"second slash index: {SecondSlash}");
-
-                if (url.Length > SecondSlash + 1) {
-
-                    isOP = false;
-                } else
-                {
-                    isOP = true;
-                }
-
-                if (!isOP)
-                {
-                    ThreadId = Int32.Parse(url.Substring(SecondSlash + 1).Trim('/'));
-                    Console.WriteLine($"ThreadID: {ThreadId}");
-                }
-                
-
-            } else
-            {
-                isOP = true;
-                Board = url.Substring(1).ToLower();
-            }
 
 
             
@@ -236,35 +256,33 @@ namespace MvcForum.Controllers
 
             int LastPostId = 0;
 
-
                 //returns null by default, causing exception
-                int LastPostID = _context.Post.Where(x => x.Board.Equals(Board))
+                LastPostId = _context.Post.Where(x => x.Board.Equals(Board))
                              .OrderByDescending(x => x.Id)
                              .FirstOrDefault().Id;
 
-                if (LastPostID == null)
+                if (LastPostId == null)
                 {
-                    LastPostID = 0;
+                    LastPostId = 0;
                 }
 
-                Console.WriteLine(LastPostID);
+            Console.WriteLine($"Last post ID: {LastPostId}");
+            Console.WriteLine($"IsOP: {isOP}");
 
-            
 
             //int ThreadId;
             if (isOP)
             {
                 ThreadId = LastPostId + 1;
             }
+            Console.WriteLine(ThreadId);
 
             if (ThreadId == 0)
             {
                 Console.WriteLine("ThreadID is still 0");
-                Console.WriteLine("PostController.cs 242");
+
                 throw new Exception();
             }
-
-
 
 
             Post NewPost = new Post
@@ -292,7 +310,9 @@ namespace MvcForum.Controllers
             }
 
             _context.Post.Add(NewPost);
-            
+
+            Console.WriteLine($"threadID: {ThreadId}");
+
 
             //logic to purge an old thread if thread limit hit
 
@@ -356,7 +376,6 @@ namespace MvcForum.Controllers
                     
                 }
             }
-
 
 
             _context.SaveChanges();
