@@ -5,7 +5,7 @@ namespace MvcForum.Models
     public class ForumThread : IEnumerable<Post>
     {
         public int Id { get; set; }
-        public List<Post> Posts { get; set; }
+        public List<Post> Posts { get; private set; }
 
         public ForumThread()
         {

@@ -2,11 +2,11 @@
 using MvcForum.Models;
 using System.Diagnostics;
 using MvcForum.Data;
-using MvcForum.Models;
 using MvcForum.ViewModels;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace MvcForum.Controllers
 {
@@ -15,11 +15,13 @@ namespace MvcForum.Controllers
 
         private readonly PostContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _config;
 
-        public PostController(PostContext context, IWebHostEnvironment env)
+        public PostController(PostContext context, IWebHostEnvironment env, IConfiguration configuration)
         {
             _context = context;
             _env = env;
+            _config = configuration;
         }
 
         //public IActionResult Index()
@@ -38,7 +40,17 @@ namespace MvcForum.Controllers
         {
             //var headers = Request.Headers;
 
+            //var settings = _config["CustomConfig"];
+
+            int MaxThreads = Int32.Parse(_config["CustomConfig:MaxThreadsPerBoard"]);
+
+
+
+
             string ip = HttpContext.Connection.RemoteIpAddress.ToString();
+
+
+
 
             bool HasFile = false;
 
@@ -48,13 +60,18 @@ namespace MvcForum.Controllers
             string ThumbFileName = null;
             int ThreadId = 0;
 
+            UploadFile uploadFile = null;
+
             if (file != null) {
 
                 HasFile = true;
 
+                //uploadFile = new UploadFile();
                 //Validate file type
 
                 userFileName = file.FileName;
+
+                
 
                 string extension = Path.GetExtension(file.FileName);
 
@@ -98,16 +115,19 @@ namespace MvcForum.Controllers
 
                 //If image, make thumbnail with max dimensions 250x250
 
-                
+                uploadFile.UserFileName = userFileName;
+                uploadFile.Extension = extension;
+                uploadFile.FullFileName = Path.GetFileNameWithoutExtension(storageFileName);
 
                 if (ImageExtensions.Contains(extension))
                 {
-                    ThumbFileName = storageFileName + "_thumb" + extension;
+                    ThumbFileName = Path.GetFileNameWithoutExtension(storageFileName) + "_thumb" + extension;
                     string ThumbPath = Path.Combine(_env.WebRootPath, "images", ThumbFileName);
 
                     try
                     {
                         Utility.CreateThumbnail(storagePath, ThumbPath);
+                        uploadFile.ThumbFileName = Path.GetFileNameWithoutExtension(storageFileName) + "_thumb";
 
                     } catch (Exception e)
                     {
@@ -127,6 +147,9 @@ namespace MvcForum.Controllers
                 Console.WriteLine(storageFileName);
 
                 Console.WriteLine(storagePath);
+
+
+                
 
                 
 
@@ -212,8 +235,7 @@ namespace MvcForum.Controllers
             Console.WriteLine($"Board: {Board}");
 
             int LastPostId = 0;
-            using (_context)
-            {
+
 
                 //returns null by default, causing exception
                 int LastPostID = _context.Post.Where(x => x.Board.Equals(Board))
@@ -227,7 +249,6 @@ namespace MvcForum.Controllers
 
                 Console.WriteLine(LastPostID);
 
-            }
             
 
             //int ThreadId;
@@ -244,6 +265,8 @@ namespace MvcForum.Controllers
             }
 
 
+
+
             Post NewPost = new Post
             {
                 Subject = HttpContext.Request.Form["Subject"].ToString(),
@@ -257,30 +280,92 @@ namespace MvcForum.Controllers
                 ThreadId = ThreadId,
                 //For now we only support images
                 HasImage = HasFile,
-                UserFileName = userFileName,
-                FullImageName = storageFileName,
-                ThumbImageName = ThumbFileName
-                
+                Files = new List<UploadFile>()
 
             };
 
-            //_context.Post.Add(NewPost);
+            if (uploadFile is not null)
+            {
+                uploadFile.Post = NewPost;
+                NewPost.Files.Add(uploadFile);
+               _context.Files.Add(uploadFile);
+            }
+
+            _context.Post.Add(NewPost);
+            
 
             //logic to purge an old thread if thread limit hit
 
             bool ThreadLimitReached = false;
+            int Threads = 0;
 
-            if (isOP)
+
+            Threads = _context.Post.Where(x => x.Board.Equals(Board)).Select(x => x.ThreadId == ThreadId).Count();
+            Console.WriteLine($"Current threads: {Threads}");
+            
+
+            int? OldestThreadId;
+
+            if (Threads >= MaxThreads)
             {
-                
+                if (isOP)
+                {
+                    //get thread that was bumped the longest time ago
+
+                    var posts = _context.Post.Where(x => x.Board.Equals(Board))
+                                .Where(x => x.Sage == false);
+
+                    Post OldestPost = posts.First();
+                    foreach (Post post in posts)
+                    {
+                        if (post.Timestamp < OldestPost.Timestamp)
+                        {
+                            OldestPost = post;
+                        }
+                    }
+
+
+                    OldestThreadId = OldestPost.ThreadId;
+
+                    //Delete files and entries in file dbset associated with the thread
+                    var ThreadPosts = posts.Where(x => x.ThreadId == OldestThreadId);
+
+                    foreach (Post post in ThreadPosts)
+                    {
+                        if (post.HasImage)
+                        {
+                            foreach (UploadFile FileToDelete in post.Files)
+                            {
+                                string PathToDelete = Path.Combine(_env.WebRootPath, "images", FileToDelete.FullFileName);
+                                System.IO.File.Delete(PathToDelete);
+
+                                if (FileToDelete.ThumbFileName is not null)
+                                {
+                                    PathToDelete = Path.Combine(_env.WebRootPath, "images", FileToDelete.ThumbFileName);
+                                    System.IO.File.Delete(PathToDelete);
+                                }
+
+                                _context.Files.Remove(FileToDelete);
+
+                                
+                            }
+                        }
+                        _context.Remove(post);
+                    }
+
+                    
+                }
             }
 
 
-            //_context.SaveChanges();
+
+            _context.SaveChanges();
 
 
 
-            return Ok();
+            return Redirect($"/{Board}/{ThreadId}");
+
+            
         }
 
 

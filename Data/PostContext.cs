@@ -18,7 +18,14 @@ namespace MvcForum.Data
 
         public DbSet<Models.Post> Post { get; set;}
 
+        public DbSet<Models.UploadFile> Files { get; set;}
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Models.Post>()
+                .HasMany(c => c.Files)
+                .WithOne(e => e.Post);
+        }
 
         //Composite primary key
         //protected override void OnModelCreating(ModelBuilder modelBuilder)

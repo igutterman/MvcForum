@@ -2,8 +2,8 @@
 using MvcForum.Models;
 using System.Diagnostics;
 using MvcForum.Data;
-using MvcForum.Models;
 using MvcForum.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace MvcForum.Controllers
 {
@@ -33,8 +33,11 @@ namespace MvcForum.Controllers
             using (_context)
             {
 
-                var posts = from post in _context.Post
-                            select post;
+                
+
+                var posts = _context.Post
+                            .Include(post => post.Files)
+                            .ToList();
 
                 //List<int> threadIDs = new List<int>();
 
@@ -107,9 +110,13 @@ namespace MvcForum.Controllers
 
             using (_context)
             {
-                var posts = from post in _context.Post
-                            where post.ThreadId == Int32.Parse(threadID)  //route id
-                            select post;
+                var posts = _context.Post
+                            .Where(post => post.ThreadId == Int32.Parse(threadID))
+                            .Include(post => post.Files)
+                            .ToList();
+
+                            //where post.ThreadId == Int32.Parse(threadID)  //route id
+                            //select post;
 
 
                 ForumThread thread = new ForumThread();

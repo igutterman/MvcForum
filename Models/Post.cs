@@ -30,12 +30,14 @@ namespace MvcForum.Models
 
         public bool HasImage { get; set; }
 
+        public IList<UploadFile>? Files { get; set; }
+
         
-        public string? UserFileName { get; set; }
+        //public string? UserFileName { get; set; }
 
-        public string? FullImageName { get; set; }
+        //public string? FullImageName { get; set; }
 
-        public string? ThumbImageName { get; set; }
+        //public string? ThumbImageName { get; set; }
 
     }
 }

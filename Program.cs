@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using System.Configuration;
 using Microsoft.Extensions.Configuration;
-using MvcForum.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 
+
+//https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-6.0
 var builder = WebApplication.CreateBuilder(args);
+
 
 var connectionString = builder.Configuration.GetConnectionString("PostDatabase");
 // Add services to the container.
@@ -17,6 +19,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddResponseCaching();
 
 builder.Services.AddDbContext<PostContext>(options => options.UseSqlServer(connectionString));
+
+
+
 
 
 var app = builder.Build();
@@ -51,6 +56,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+
+//whats this
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
