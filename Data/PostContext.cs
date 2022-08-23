@@ -28,12 +28,5 @@ namespace MvcForum.Data
         }
 
         
-
-        //Composite primary key
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<Post>()
-        //        .HasKey(x => new { x.Id, x.Board });
-        //}
     }
 }

@@ -7,7 +7,7 @@
 
 
 
-@model ThreadViewModel;
+@model ForumPageViewModel;
 
 
 @{
@@ -39,8 +39,8 @@
     <div class="Thread">
 
         @{
-            Post OPpost = Model.Thread.Posts[0];
-            string imagePath = Model.WebRootPath + "/images/" + OPpost.Files[0].FullFileName + OPpost.Files[0].Extension;
+            Post OPpost = Model.Threads[0].Posts[0];
+            string imagePath = Model.WebRootPath + "/images/" + OPpost.Files[0].FullFileName;
             string imageFileName = System.IO.Path.GetFileName(imagePath);
             using (var image = SixLabors.ImageSharp.Image.Load(imagePath))
             {
@@ -55,7 +55,7 @@
                     </div>
 
                     <div class = 'OpPic'>
-                        <img id = '@imageCounter.ToString()' src='/images/@OPpost.Files[0].ThumbFileName@OPpost.Files[0].Extension' data-isop = '1' onclick='resizeImage(event)'>
+                        <img id = '@imageCounter.ToString()' src='/images/@OPpost.Files[0].ThumbFileName' data-isop = '1' onclick='resizeImage(event)'>
                         @{
                             imageCounter++;
                             Console.WriteLine("incremented imageCounter");
@@ -74,14 +74,14 @@
                 </div>
 
 
-                @foreach (var post in Model.Thread.Posts)
+                @foreach (var post in Model.Threads[0].Posts)
                 if (!post.IsOP)
                 {
                         
                     {
                         if (post.HasImage)
                         {
-                            imagePath = Model.WebRootPath + "/images/" + post.Files[0].FullFileName + post.Files[0].Extension;
+                            imagePath = Model.WebRootPath + "/images/" + post.Files[0].FullFileName;
                             imageFileName = System.IO.Path.GetFileName(imagePath);
                             using (var image1 = SixLabors.ImageSharp.Image.Load(imagePath))
                             {
@@ -102,7 +102,7 @@
                                 </div>
                                 <div class = 'ReplyImageTextContainer'>
                                     <div class = 'ReplyImage'>
-                                        <img id = '@imageCounter.ToString()' src = '/images/@post.Files[0].ThumbFileName@OPpost.Files[0].Extension' data-isop = '0' onclick = 'resizeImage(event)'>
+                                        <img id = '@imageCounter.ToString()' src = '/images/@post.Files[0].ThumbFileName' data-isop = '0' onclick = 'resizeImage(event)'>
                                             @{
                                                 imageCounter++;
                                                 Console.WriteLine("incremented imageCounter");
@@ -140,8 +140,6 @@
 
 
          </div>
-
-
 
 
 </body>

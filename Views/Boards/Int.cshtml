@@ -30,227 +30,87 @@
     <h1>/int/</h1>
 </div>
 
-@{
-    int imageCounter = 0;
- }
+
 
 
 <p id="demo"></p>
 
-@*
-<p id ="demo1"</p>
-<p id = "demo2"></p>
-<p id = "demo3"></p>
 
-
-<p id = "demo4"></p>
-<p id = "demo4"></p>
-<p id = "demo4"></p>
-*@
 
 <partial name="~/Views/Shared/_PostingForm.cshtml" />
 
 
-
-
 <div class = 'Threads'>
-@foreach (var thread in Model.Threads)
-    {
-        Post OPpost = thread.Posts[0];
+@foreach (var thread in Model.Threads){
 
-        Console.WriteLine($"Oppost ID: {OPpost.Id}");
-        Console.WriteLine($"OpPost File: {OPpost.Files[0].FullFileName}");
-
-        string imagePath = Model.WebRootPath + "/images/" + OPpost.Files[0].FullFileName + OPpost.Files[0].Extension;
-        string imageFileName = System.IO.Path.GetFileName(imagePath);
-        using (var image = SixLabors.ImageSharp.Image.Load(imagePath))
-        {
-
-            double FileSize = new System.IO.FileInfo(imagePath).Length;
-            FileSize *= 0.00097656;
-            FileSize = Math.Round(FileSize, 2);
-
-
-
-            <div class = 'Thread'>
-                <div class = 'OpPost'>
-                    <div class = 'OpPicInfo'>
-                        <span>File: </span><span class = 'OpPicLink'><a href = @imageFileName>@imageFileName</a></span>
-                        <span>@FileSize.ToString()KB, @image.Width x @image.Height</span>
-                    </div>
-
-                    <div class = 'OpPic'>
-                        <img id = '@imageCounter.ToString()' src='/images/@OPpost.Files[0].ThumbFileName@OPpost.Files[0].Extension' data-isop = '1' data-expanded = '0' onclick='resizeImage(event)'>
-                        @{
-                            imageCounter++;
-                            Console.WriteLine("incremented imageCounter");
-                            Console.WriteLine($"imageCounter: {imageCounter}");
-                        }
-                    </div>
-                    <div class = 'PostInfo'>
-                        @*No Name field in Post model*@
-                        <span class = 'PostSubject'>@OPpost.Subject</span>
-                        <span class = 'PosterName'>Anonymous</span>
-                        <span class = 'Timestamp'>@OPpost.Timestamp.ToString()</span>
-                        <span class = 'PostNumber'>@OPpost.IdOnBoard</span>
-                        <span class = 'LinkToThread'><a href = @OPpost.Board/@OPpost.ThreadId>[Reply]</a></span>
-                    </div>
-                    <div class = 'PostText'>
-                        @Html.Raw(HttpUtility.HtmlEncode(OPpost.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
-                    </div>
-
-
-
-                </div>
-
-
-
-
-
-                @foreach (var post in thread.Posts)
-                if (!post.IsOP)
+            ThreadViewModel ThreadView = new ThreadViewModel(Model.WebRootPath)
                 {
-                        
-                    {
-                        if (post.HasImage)
-                        {
-
-                            imagePath = Model.WebRootPath + "/images/" + post.Files[0].FullFileName + post.Files[0].Extension;
-                            imageFileName = System.IO.Path.GetFileName(imagePath);
-                            using (var image1 = SixLabors.ImageSharp.Image.Load(imagePath))
-                            {
-
-
-                                FileSize = new System.IO.FileInfo(imagePath).Length;
-                                FileSize *= 0.00097656;
-                                FileSize = Math.Round(FileSize, 2);
-
-
-                            <div class = 'ImageReplyPost'>
-
-                                <div class = 'PostInfo'>
-                                    <span class = 'PostSubject'>@post.Subject</span>
-                                    <span class = 'PosterName'>Anonymous</span>
-                                    <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
-                                </div>
-                                <div class = 'ReplyImageInfo'>
-
-                                    <span>File: </span><span class = 'ReplyPicLink'><a href = @imageFileName>@imageFileName</a></span>
-                                    <span>@FileSize.ToString()KB, @image.Width x @image.Height</span>
-                                </div>
-                                <div class = 'ReplyImageTextContainer'>
-
-
-                                    <div class = 'ReplyImage'>
-                                        <img id = '@imageCounter.ToString()' src = '/images/@post.Files[0].ThumbFileName@post.Files[0].Extension' data-isop = '0' data-expanded = '0' onclick = 'resizeImage(event)'>
-                                            @{
-                                                imageCounter++;
-                                                Console.WriteLine("incremented imageCounter");
-                                                Console.WriteLine($"imageCounter: {imageCounter}");
-                                            }
-                                    </div>
-                                    <div class = 'PostText'>
-                                        
-                                        @Html.Raw(HttpUtility.HtmlEncode(post.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
-
-                                    </div>
-
-                                </div>
-                            </div>
-                            }
-                        } else
-                        {
-
-                            <div class = 'ReplyPost'>
-                                <div class = 'PostInfo'>
-                                    <span class = 'PostSubject'>@post.Subject</span>
-                                    <span class = 'PosterName'>Anonymous</span>
-                                    <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
-                                </div>
-                                <div class = 'PostText'>
-                                    @Html.Raw(HttpUtility.HtmlEncode(post.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
-                                </div>
-
-                            </div>
-                        }
-                    }
-                }
-        </div>
-        }
-    }
+                    Thread = thread
+                };
+            <partial name ="_ThreadPartial" model = "ThreadView" />
+            <hr />
+}
 </div>
 
-<p id="msg"></p>
 
 </body>
 
-@{
-    Console.WriteLine("reached end of int.cshtml");
-}
 
 
 
-<script>
-
-    var fullPaths = [];
-    var thumbPaths = [];
-
-    
-
-    @foreach (ForumThread thread in Model.Threads) {
-        @foreach (Post post in thread) {
-            if (post.HasImage) {
-                <text>
-
-                    fullPaths.push('@post.Files[0].FullFileName@post.Files[0].Extension');
-                    thumbPaths.push('@post.Files[0].ThumbFileName@post.Files[0].Extension');
-                </text>
-
-            }
-        }
-    }
-
-</script>
-
-
-
-@*
-<script>
-
-    document.getElementById("demo1").innerHTML = "Fullpath: " + fullPaths[0] + ", thumbpath: " + thumbPaths[0];
-    document.getElementById("demo2").innerHTML = "Fullpath: " + fullPaths[1] + ", thumbpath: " + thumbPaths[1];
-    document.getElementById("demo3").innerHTML = "Fullpath: " + fullPaths[2] + ", thumbpath: " + thumbPaths[2];
-    document.getElementById("demo4").innerHTML = "Fullpath: " + fullPaths[3] + ", thumbpath: " + thumbPaths[3];
-    document.getElementById("demo5").innerHTML = "Fullpath: " + fullPaths[4] + ", thumbpath: " + thumbPaths[4];
-    document.getElementById("demo6").innerHTML = "Fullpath: " + fullPaths[5] + ", thumbpath: " + thumbPaths[5];
-
-</script>
-
-*@
 
 <script>
 
     function resizeImage(event) { 
-        var x = event.target;
-        //change this to use hashmap?
-        document.getElementById("demo").innerHTML = "Fullpath: " + fullPaths[x.id] + ", thumbpath: " + thumbPaths[x.id];
 
-        var fullSize = fullPaths[x.id];
-        var thumbSize = thumbPaths[x.id];
 
-        
         var image = event.target;
         
+        var size = "thumb";
 
         if (image.getAttribute("data-expanded") === "0") {
-            image.src = '/images/' + fullPaths[x.id];
-            image.dataset.expanded = "1";
-        } else {
-            image.src = '/images/' + thumbPaths[x.id];
-            image.dataset.expanded = "0";
+            size = "full";
         }
+
+        var request;
+        if (window.XMLHttpRequest) {
+            //New browsers
+            request = new XMLHttpRequest();
+        }
+        else if(window.ActiveXObject) {
+            //Old IE browsers
+            request = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        var value = {FileSize: size, FileName: image.id};
+
+
+        console.log(value);
+
+
+        if (request != null) {
+            var url = "/LoadImage";
+            request.open("POST", url, true);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.onreadystatechange = function() {
+                if (request.readyState == 4 && request.status == 200) {
+                    var response = JSON.parse(request.responseText);
+
+                    image.src = '/images/' + response;
+
+                    if (image.getAttribute("data-expanded") === "0") {
+                        image.dataset.expanded = "1";
+                    } else {
+                        image.dataset.expanded = "0";
+                    }
+                }
+            };
+            request.send(JSON.stringify(value));
+        }
+
 
 
     }
 </script>
 
+@*<script src="~/js/site.js" asp-append-version="true"></script>*@

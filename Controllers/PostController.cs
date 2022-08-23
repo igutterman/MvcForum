@@ -24,12 +24,37 @@ namespace MvcForum.Controllers
             _config = configuration;
         }
 
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
 
 
+
+        //AJAX method to enable resizing images
+        [Route("/LoadImage/")]
+        public JsonResult LoadFilePath([FromBody] AJAXparameters parameters)
+        {
+
+
+
+            Console.WriteLine($"FileSize: {parameters.FileSize}");
+
+
+            Console.WriteLine($"Filename: {parameters.FileName}");
+
+            var File = _context.Files
+                           .Where(x => x.FullFileName == parameters.FileName).First();
+
+            string response;
+
+            if (parameters.FileSize == "thumb")
+            {
+                response = File.ThumbFileName;
+            } else
+            {
+                response = File.FullFileName;
+            }
+
+            Console.WriteLine(response);
+            return Json(response);
+        }
 
 
         //Change to support multiple files
@@ -178,7 +203,7 @@ namespace MvcForum.Controllers
 
                 uploadFile.UserFileName = userFileName;
                 uploadFile.Extension = extension;
-                uploadFile.FullFileName = Path.GetFileNameWithoutExtension(storageFileName);
+                uploadFile.FullFileName = storageFileName;
 
                 if (ImageExtensions.Contains(extension))
                 {
@@ -188,7 +213,7 @@ namespace MvcForum.Controllers
                     try
                     {
                         Utility.CreateThumbnail(storagePath, ThumbPath);
-                        uploadFile.ThumbFileName = Path.GetFileNameWithoutExtension(storageFileName) + "_thumb";
+                        uploadFile.ThumbFileName = Path.GetFileNameWithoutExtension(storageFileName) + "_thumb" + extension;
 
                     } catch (Exception e)
                     {
@@ -379,7 +404,6 @@ namespace MvcForum.Controllers
 
 
             _context.SaveChanges();
-
 
 
             return Redirect($"/{Board}/{ThreadId}");

@@ -5,6 +5,8 @@ using MvcForum.Data;
 using MvcForum.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
+
+
 namespace MvcForum.Controllers
 {
     public class IntController : Controller
@@ -12,11 +14,16 @@ namespace MvcForum.Controllers
 
         private readonly PostContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _config;
+        private readonly string[] Boards;
 
-        public IntController(PostContext context, IWebHostEnvironment env)
+        public IntController(PostContext context, IWebHostEnvironment env, IConfiguration config)
         {
             _context = context;
             _env = env;
+            _config = config;
+
+            Boards = _config.GetSection("CustomConfig:BoardList").Get<string[]>();
         }
 
 
@@ -26,12 +33,24 @@ namespace MvcForum.Controllers
         public IActionResult Index()
         {
 
+            foreach (string board in Boards)
+            {
+                Console.WriteLine(board);
+            }
+
             //Get board from url. Use board in db query
 
             Console.WriteLine(Request.Path);
+            string Board = Request.Path.ToString().Trim('/');
+
+            if (!Array.Exists(Boards, element => element == Board)) {
+                Console.WriteLine("Invalid board");
+                return View("~/Views/Shared/Error.cshtml");
+            }
 
 
             var posts = _context.Post
+                        .Where(x => x.Board == Board)
                         .Include(post => post.Files)
                         .ToList();
 
@@ -89,7 +108,7 @@ namespace MvcForum.Controllers
         }
 
 
-        [Route("/{board}/{id}")]
+        [Route("/{board}/threads/{id}")]
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Thread()
         {
@@ -102,6 +121,17 @@ namespace MvcForum.Controllers
 
             string threadID = Request.Path;
             int pos = threadID.IndexOf('/', threadID.IndexOf('/') + 1);
+            string Board = Request.Path.ToString().Substring(0, pos).Trim('/');
+
+
+            if (!Array.Exists(Boards, element => element == Board))
+            {
+                Console.WriteLine("Invalid board");
+                return View("~/Views/Shared/Error.cshtml");
+            }
+
+            Console.WriteLine($"Board: {Board}");
+            pos = Utility.getNthIndex(threadID, '/', 3);
             threadID = threadID.Substring(pos, threadID.Length - pos).Trim('/');
             Console.WriteLine("here");
             Console.WriteLine($"ThreadID : {threadID}");
@@ -109,7 +139,7 @@ namespace MvcForum.Controllers
             using (_context)
             {
                 var posts = _context.Post
-
+                            .Where(post => post.Board.Equals(Board))
                             .Where(post => post.ThreadId == Int32.Parse(threadID))
                             .Include(post => post.Files)
                             .ToList();
@@ -126,9 +156,9 @@ namespace MvcForum.Controllers
 
                 thread.sortPostsByTimestamp();
 
-                ThreadViewModel threadView = new ThreadViewModel(_env.WebRootPath)
+                ForumPageViewModel threadView = new ForumPageViewModel(_env.WebRootPath)
                 {
-                    Thread = thread
+                    Threads = new List<ForumThread>() {thread}
                 };
 
                 return View("~/Views/Boards/IntThread.cshtml", threadView);

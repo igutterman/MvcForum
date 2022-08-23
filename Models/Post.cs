@@ -19,7 +19,6 @@ namespace MvcForum.Models
         public bool Sage { get; set; }
         public string? Text { get; set; }
 
-        
         public string Board { get; set; }
 
         public int IdOnBoard { get; set; }
