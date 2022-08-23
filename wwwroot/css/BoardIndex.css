@@ -19,7 +19,7 @@
 }
 
 .ReplyPost {
-/*  width: max-content;*/
+  width: fit-content;
   display: flex;
   flex-direction: column;
   margin: 10px;
@@ -29,7 +29,7 @@
 }
 
 .ImageReplyPost {
-/*  width: max-content;*/
+  width: fit-content;
   display: flex;
   flex-direction: column;
   margin: 10px;
@@ -39,7 +39,7 @@
 }
 
 .ImageReplyPostExpanded {
-  /*width: max-content;*/
+  width: max-content;
   display: flex;
   flex-direction: column;
   margin: 10px;
