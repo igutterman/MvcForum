@@ -1,11 +1,11 @@
 ﻿
 
-<div class="PostForm">
+<div>
 
     @*fix so that name, type etc are in the same order*@
     <form enctype="multipart/form-data" asp-controller="Post" asp-action="NewPost" method="post" id="PostingForm">
 
-        <table>
+        <table class="PostForm">
             <tr class="SubjectSubmitRow">
                 <td id="SubjectCell"><input name="Subject" type="text" maxlength="80" placeholder="Subject" /></td>
 
@@ -18,7 +18,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <td colspan="2">
                 <textarea form="PostingForm" name="PostText" maxlength="5000" placeholder="Enter text here..."></textarea>
                 </td>
             </tr>
