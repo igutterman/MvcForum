@@ -25,20 +25,16 @@ namespace MvcForum.Controllers
         }
 
 
-
-
         //AJAX method to enable resizing images
         [Route("/LoadImage/")]
         public JsonResult LoadFilePath([FromBody] AJAXparameters parameters)
         {
 
-
-
             Console.WriteLine($"FileSize: {parameters.FileSize}");
-
 
             Console.WriteLine($"Filename: {parameters.FileName}");
 
+            //needs try/catch in case of bad params
             var File = _context.Files
                            .Where(x => x.FullFileName == parameters.FileName).First();
 
@@ -101,7 +97,8 @@ namespace MvcForum.Controllers
 
                 if (!isOP)
                 {
-                    ThreadId = Int32.Parse(url.Substring(SecondSlash + 1).Trim('/'));
+                    Console.WriteLine($"{url.Substring(Utility.getNthIndex(url, '/', 3)).Trim('/')}");
+                    ThreadId = Int32.Parse(url.Substring(Utility.getNthIndex(url, '/', 3)).Trim('/'));
                     Console.WriteLine($"ThreadID: {ThreadId}");
                 }
 
@@ -405,8 +402,8 @@ namespace MvcForum.Controllers
 
             _context.SaveChanges();
 
-
-            return Redirect($"/{Board}/{ThreadId}");
+            //return Redirect($"/{Board}/{ThreadId}");
+            return Redirect($"/{Board}/threads/{ThreadId}");
 
             
         }

@@ -156,9 +156,9 @@ namespace MvcForum.Controllers
 
                 thread.sortPostsByTimestamp();
 
-                ForumPageViewModel threadView = new ForumPageViewModel(_env.WebRootPath)
+                ThreadViewModel threadView = new ThreadViewModel(_env.WebRootPath)
                 {
-                    Threads = new List<ForumThread>() {thread}
+                    Thread = thread
                 };
 
                 return View("~/Views/Boards/IntThread.cshtml", threadView);
