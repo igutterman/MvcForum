@@ -1,0 +1,126 @@
+﻿@using MvcForum.ViewModels;
+@using SixLabors.ImageSharp;
+@using System.Web;
+
+@model ThreadViewModel;
+
+@{
+    Post OPpost = Model.Thread.Posts[0];
+
+    Console.WriteLine($"Oppost ID: {OPpost.Id}");
+    Console.WriteLine($"OpPost File: {OPpost.Files[0].FullFileName}");
+
+    string imagePath = Model.WebRootPath + "/images/" + OPpost.Files[0].FullFileName;
+    string imageFileName = System.IO.Path.GetFileName(imagePath);
+
+}
+
+@using (var image = SixLabors.ImageSharp.Image.Load(imagePath))
+{
+
+    double FileSize = new System.IO.FileInfo(imagePath).Length;
+    FileSize *= 0.00097656;
+    FileSize = Math.Round(FileSize, 2);
+
+
+
+    <div class = 'Thread'>
+        <div class = 'OpPost'>
+            <div class = 'OpPicInfo'>
+                <span>File: </span><span class = 'OpPicLink'><a href = @imageFileName>@OPpost.Files[0].UserFileName</a></span>
+                <span>@FileSize.ToString()KB, @image.Width x @image.Height</span>
+            </div>
+
+            <div class = 'OpPic'>
+                <img id = '@OPpost.Files[0].FullFileName' src='/images/@OPpost.Files[0].ThumbFileName' data-isop = '1' data-expanded = '0' onclick='resizeImage(event)'>
+
+            </div>
+            <div class = 'PostInfo'>
+                @*No Name field in Post model*@
+                @{
+                    string link = @OPpost.Board + "/threads/" + @OPpost.ThreadId;
+                    }
+                <span class = 'PostSubject'>@OPpost.Subject</span>
+                <span class = 'PosterName'>Anonymous</span>
+                <span class = 'Timestamp'>@OPpost.Timestamp.ToString()</span>
+                <span class = 'PostNumber'>@OPpost.IdOnBoard</span>
+                <span class = 'LinkToThread'><a href = @link>[Reply]</a></span>
+            </div>
+            <div class = 'PostText'>
+                @Html.Raw(HttpUtility.HtmlEncode(OPpost.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
+            </div>
+
+
+
+        </div>
+
+
+        @foreach (var post in Model.Thread.Posts)
+        if (!post.IsOP)
+        {
+                Console.WriteLine("partial view code invoked");
+
+            {
+                if (post.HasImage)
+                {
+
+                    imagePath = Model.WebRootPath + "/images/" + post.Files[0].FullFileName;
+                    imageFileName = System.IO.Path.GetFileName(imagePath);
+                    using (var image1 = SixLabors.ImageSharp.Image.Load(imagePath))
+                    {
+
+
+                        FileSize = new System.IO.FileInfo(imagePath).Length;
+                        FileSize *= 0.00097656;
+                        FileSize = Math.Round(FileSize, 2);
+
+
+                    <div class = 'ImageReplyPost'>
+
+                        <div class = 'PostInfo'>
+                            <span class = 'PostSubject'>@post.Subject</span>
+                            <span class = 'PosterName'>Anonymous</span>
+                            <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
+                        </div>
+                        <div class = 'ReplyImageInfo'>
+
+                            <span>File: </span><span class = 'ReplyPicLink'><a href = @imageFileName>@post.Files[0].UserFileName</a></span>
+                            <span>@FileSize.ToString()KB, @image.Width x @image.Height</span>
+                        </div>
+                        <div class = 'ReplyImageTextContainer'>
+
+
+                            <div class = 'ReplyImage'>
+                                <img id = '@post.Files[0].FullFileName' src = '/images/@post.Files[0].ThumbFileName' data-isop = '0' data-expanded = '0' onclick = 'resizeImage(event)'>
+
+                            </div>
+                            <div class = 'PostText'>
+                                        
+                                @Html.Raw(HttpUtility.HtmlEncode(post.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
+
+                            </div>
+
+                        </div>
+                    </div>
+                    }
+                } else
+                {
+
+                    <div class = 'ReplyPost'>
+                        <div class = 'PostInfo'>
+                            <span class = 'PostSubject'>@post.Subject</span>
+                            <span class = 'PosterName'>Anonymous</span>
+                            <span class = 'Timestamp'>@post.Timestamp.ToString()</span>
+                        </div>
+                        <div class = 'PostText'>
+                            @Html.Raw(HttpUtility.HtmlEncode(post.Text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>"))
+                        </div>
+
+                    </div>
+                }
+            }
+        }
+</div>
+}
+
+

@@ -1,0 +1,61 @@
+﻿@using MvcForum.ViewModels
+@using SixLabors.ImageSharp
+@using MvcForum.Models
+@using System.Web;
+
+@model ForumPageViewModel
+
+@{
+    ViewData["Title"] = "/int/";
+    Layout = null;
+    
+}
+
+@*
+@section styles{
+    <link rel="Stylesheet" href="@Href("~/css/BoardIndex.css")" />
+}
+*@
+
+
+<head>
+    <title>/int/</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="Stylesheet" href="@Href("~/css/BoardIndex.css")" asp-append-version="true" />
+</head>
+
+<body>
+
+<div class="BoardName">
+    <h1>/int/</h1>
+</div>
+
+
+<p id="demo"></p>
+
+
+
+<partial name="~/Views/Shared/_PostingForm.cshtml" />
+
+
+<div class = 'Threads'>
+@foreach (var thread in Model.Threads){
+
+            ThreadViewModel ThreadView = new ThreadViewModel(Model.WebRootPath)
+                {
+                    Thread = thread
+                };
+            <partial name ="_ThreadPartial" model = "ThreadView" />
+            <hr />
+}
+</div>
+
+</body>
+
+
+
+
+
+
+
+<script src="~/js/site.js" asp-append-version="true"></script>
