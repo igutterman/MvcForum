@@ -8,13 +8,12 @@ namespace MvcForum.ViewModels
         public ForumThread Thread { get; set; }
         public string WebRootPath { get; set; }
 
-        public List<PostViewModel> PostViewModels { get; set; }
 
-        public ThreadViewModel(string webRootPath)
+        public ThreadViewModel(ForumThread thread, string webRootPath)
         {
             WebRootPath = webRootPath;
-            Thread = new ForumThread();
-            PostViewModels = new List<PostViewModel>();
+            Thread = thread;
+
         }
 
     }

@@ -13,9 +13,9 @@ namespace MvcForum.ViewModels
         public string WebRootPath { get; set; }
 
 
-        public ForumPageViewModel(string webRootPath)
+        public ForumPageViewModel(List<ForumThread> threads, string webRootPath)
         {
-            Threads = new List<ForumThread>();
+            Threads = threads;
             WebRootPath = webRootPath;
 
 

@@ -64,6 +64,8 @@ namespace MvcForum.Controllers
 
             foreach (Post post in posts)
             {
+                Console.WriteLine(post.Text);
+
                 if (!threads.ContainsKey(post.ThreadId))
                 {
                     threads.Add(post.ThreadId, new ForumThread(post));
@@ -81,7 +83,7 @@ namespace MvcForum.Controllers
                 
             List<ForumThread> sortedThreads = new List<ForumThread>();
 
-            foreach (KeyValuePair<int, ForumThread> thread in threads.OrderByDescending(x => x.Value.getLastPostTime()))
+            foreach (KeyValuePair<int, ForumThread> thread in threads.OrderByDescending(x => x.Value.getLastBumpTime()))
             {
                 sortedThreads.Add(thread.Value);
             }
@@ -92,14 +94,18 @@ namespace MvcForum.Controllers
                 thread.sortPostsByTimestamp();
             }
 
-            var threadsView = new ForumPageViewModel(_env.WebRootPath)
+            var threadsView = new ForumPageViewModel(sortedThreads, _env.WebRootPath);
+
+
+            Console.WriteLine($"intcontroller: threads sent to view: {sortedThreads.Count}");
+
+            foreach (ForumThread thread in sortedThreads)
             {
-                Threads = sortedThreads
-            };
-
-            //ViewData["threads"] = sortedThreads;
-
-
+                foreach (Post post in thread.Posts)
+                {
+                    Console.WriteLine(post.Text);
+                }
+            }
 
             return View("~/Views/Boards/Int.cshtml", threadsView);
 
@@ -156,10 +162,8 @@ namespace MvcForum.Controllers
 
                 thread.sortPostsByTimestamp();
 
-                ThreadViewModel threadView = new ThreadViewModel(_env.WebRootPath)
-                {
-                    Thread = thread
-                };
+                ThreadViewModel threadView = new ThreadViewModel(thread, _env.WebRootPath);
+
 
                 return View("~/Views/Boards/IntThread.cshtml", threadView);
 

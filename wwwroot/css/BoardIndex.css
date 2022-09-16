@@ -13,6 +13,10 @@ body {
     background-color: #EEEEEE;
 }
 
+img {
+    max-width: 90vw;
+    max-height: 25vh;
+}
 
 
 .PostForm {

@@ -2,6 +2,7 @@
 using SixLabors.ImageSharp.Processing;
 using MvcForum.Data;
 using MvcForum.Models;
+using System.Web;
 
 namespace MvcForum
 {
@@ -95,6 +96,35 @@ namespace MvcForum
                 }
             }
             return -1;
+        }
+
+        //Wrap in Html.Raw in view
+        public static string EncodePostText(string text)
+        {
+            return HttpUtility.HtmlEncode(text.Replace("<br/>", "\n").Replace("<br />", "\n")).Replace("\n", "<br/>");
+        }
+
+        public static double GetFileSizeKB(string FilePath)
+        {
+            double FileSize = new System.IO.FileInfo(FilePath).Length;
+            FileSize *= 0.00097656;
+            return Math.Round(FileSize, 2);
+        }
+
+        public static int GetImageWidth(string FilePath)
+        {
+            using (var image = SixLabors.ImageSharp.Image.Load(FilePath))
+            {
+                return image.Width;
+            }
+        }
+
+        public static int GetImageHeight(string FilePath)
+        {
+            using (var image = SixLabors.ImageSharp.Image.Load(FilePath))
+            {
+                return image.Height;
+            }
         }
 
 

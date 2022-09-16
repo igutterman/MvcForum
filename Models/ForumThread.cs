@@ -27,12 +27,13 @@ namespace MvcForum.Models
 
         }
 
-        public DateTime getLastPostTime()
+        
+        public DateTime getLastBumpTime()
         {
             DateTime last = DateTime.MinValue;
             foreach (var post in Posts)
             {
-                if (post.Timestamp > last)
+                if (post.Timestamp > last && !post.Sage)
                 {
                     last = post.Timestamp;
                 }
