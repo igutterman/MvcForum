@@ -12,4 +12,6 @@
     <span>File: </span><span class = 'ReplyPicLink'><a href = @imagePath>@Model.File.UserFileName</a></span>
     <span>@Utility.GetFileSizeKB(imagePath)KB, @Utility.GetImageWidth(imagePath) x @Utility.GetImageHeight(imagePath)</span>
 
+    <img id = '@Model.File.FullFileName' src = '/images/@Model.File.ThumbFileName' data-expanded = '0' onclick='resizeImage(event)'>
+
 </div>
