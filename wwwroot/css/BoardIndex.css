@@ -120,6 +120,18 @@ textarea[name="PostText"] {
     border-style: solid;
 }
 
+.FileContainerReply {
+    display: flex;
+    flex-direction: column;
+    background-color: #9999bb;
+}
+
+.FileContainerOP {
+    display: flex;
+    flex-direction: column;
+    background-color: #DDDDDD;
+}
+
 .ImageReplyPostExpanded {
   width: max-content;
   display: flex;

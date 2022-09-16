@@ -11,10 +11,13 @@ namespace MvcForum.ViewModels
 
         public string WebRootPath { get; set; }
 
-        public FileViewModel(UploadFile file, string webRootPath)
+        public bool IsOp { get; set; }
+
+        public FileViewModel(UploadFile file, string webRootPath, bool isOp)
         {
             File = file;
             WebRootPath = webRootPath;
+            IsOp = isOp;
         }
     }
 }

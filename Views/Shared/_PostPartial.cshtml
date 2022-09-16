@@ -14,32 +14,38 @@
             string imagePath = WebRootPath + "/images/" + Model.Post.Files[0].FullFileName;
             string imageFileName = System.IO.Path.GetFileName(imagePath);
 
-            <div class = 'OpPost'>
-                <div class = 'OpPicInfo'>
-                    <span>File: </span><span class = 'OpPicLink'><a href = @imageFileName>@Model.Post.Files[0].UserFileName</a></span>
-                    <span>@Utility.GetFileSizeKB(imagePath)KB, @Utility.GetImageWidth(imagePath) x @Utility.GetImageHeight(imagePath)</span>
-                </div>
+    <div class = 'OpPost'>
 
-                <div class = 'OpPic'>
-                    <img id = '@Model.Post.Files[0].FullFileName' src='/images/@Model.Post.Files[0].ThumbFileName' data-expanded = '0' onclick='resizeImage(event)'>
 
-                </div>
-                <div class = 'PostInfo'>
-                @*No Name field in Post model*@
-                @{
-                    string link = Model.Post.Board + "/threads/" + Model.Post.ThreadId;
+                    <div class = 'OpPic'>
+
+                    @{
+                        foreach (var UploadFile in Model.Post.Files)
+                        {
+                            FileViewModel FileView = new FileViewModel(UploadFile, Model.WebRootPath, Model.Post.IsOP);
+
+                            <partial name="_FilePartial" model = "FileView" />
+                        }
+
                     }
-                    <span class = 'PostSubject'>@Model.Post.Subject</span>
-                    <span class = 'PosterName'>Anonymous</span>
-                    <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
-                    <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
-                    <span class = 'LinkToThread'><a href = @link>[Reply]</a></span>
-                </div>
-                <div class = 'PostText'>
-                    @Html.Raw(Utility.EncodePostText(Model.Post.Text))
-                </div>
 
-            </div>
+                    </div>
+                    <div class = 'PostInfo'>
+                    @*No Name field in Post model*@
+                    @{
+                    string link = Model.Post.Board + "/threads/" + Model.Post.ThreadId;
+                        }
+                        <span class = 'PostSubject'>@Model.Post.Subject</span>
+                        <span class = 'PosterName'>Anonymous</span>
+                        <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
+                        <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
+                        <span class = 'LinkToThread'><a href = @link>[Reply]</a></span>
+                    </div>
+                    <div class = 'PostText'>
+                        @Html.Raw(Utility.EncodePostText(Model.Post.Text))
+                    </div>
+
+    </div>
 
         }
 
@@ -47,49 +53,52 @@
     {
         if (Model.Post.Files.Count == 0)
         {
-            <div class = 'ReplyPost'>
-                <div class = 'PostInfo'>
-                    <span class = 'PostSubject'>@Model.Post.Subject</span>
-                    <span class = 'PosterName'>Anonymous</span>
-                    <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
-                </div>
-                <div class = 'PostText'>
-                    @Html.Raw(Utility.EncodePostText(Model.Post.Text))
-                </div>
+    <div class = 'ReplyPost'>
+                    <div class = 'PostInfo'>
+                        <span class = 'PostSubject'>@Model.Post.Subject</span>
+                        <span class = 'PosterName'>Anonymous</span>
+                        <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
+                    </div>
+                    <div class = 'PostText'>
+                        @Html.Raw(Utility.EncodePostText(Model.Post.Text))
+                    </div>
 
-            </div>
+    </div>
         }
         else if (Model.Post.Files.Count == 1)
         {
             string imagePath = WebRootPath + "/images/" + Model.Post.Files[0].FullFileName;
             string imageFileName = System.IO.Path.GetFileName(imagePath);
-            <div class = 'ImageReplyPost'>
+    <div class = 'ImageReplyPost'>
 
-                <div class = 'PostInfo'>
-                    <span class = 'PostSubject'>@Model.Post.Subject</span>
-                    <span class = 'PosterName'>Anonymous</span>
-                    <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
-                </div>
-                <div class = 'ReplyImageInfo'>
-
-                    <span>File: </span><span class = 'ReplyPicLink'><a href = @imageFileName>@Model.Post.Files[0].UserFileName</a></span>
-                    <span>@Utility.GetFileSizeKB(imagePath)KB, @Utility.GetImageWidth(imagePath) x @Utility.GetImageHeight(imagePath)</span>
-                </div>
-                <div class = 'ReplyImageTextContainer'>
-
-
-                    <div class = 'ReplyImage'>
-                        <img id = '@Model.Post.Files[0].FullFileName' src = '/images/@Model.Post.Files[0].ThumbFileName' data-expanded = '0' onclick = 'resizeImage(event)'>
-
+                    <div class = 'PostInfo'>
+                        <span class = 'PostSubject'>@Model.Post.Subject</span>
+                        <span class = 'PosterName'>Anonymous</span>
+                        <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
                     </div>
+
+                    <div class = 'ReplyImageTextContainer'>
+
+
+                        @{
+                            foreach (var UploadFile in Model.Post.Files)
+                            {
+                                FileViewModel FileView = new FileViewModel(UploadFile, Model.WebRootPath, Model.Post.IsOP);
+
+                                <partial name="_FilePartial" model = "FileView" />
+                            }
+
+                        }
+
+
                     <div class = 'PostText'>
-                                        
+                                            
                         @Html.Raw(Utility.EncodePostText(Model.Post.Text))
 
                     </div>
 
-                </div>
-            </div>
+                    </div>
+    </div>
         }
     }
 }
