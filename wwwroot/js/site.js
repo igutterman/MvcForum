@@ -4,42 +4,52 @@
 // Write your JavaScript code.
 
 
-<script>
-
-var fullPathsMap = new Map();
-var thumbPathsMap = new Map();
 
 
-    @foreach (ForumThread thread in Model.Threads) {
-        @foreach (Post post in thread) {
-            if (post.HasImage) {
+function resizeImage(event) { 
 
-                <text>
-                    fullPathsMap.set('@post.Files[0].FullFileName', '@post.Files[0].FullFileName')
-                    thumbPathsMap.set('@post.Files[0].FullFileName', '@post.Files[0].ThumbFileName')
-                </text>
+var image = event.target;
 
-            }
-        }
+var size = "thumb";
+
+if (image.getAttribute("data-expanded") === "0") {
+    size = "full";
     }
 
-</script>
-
-<script>
-
-    function resizeImage(event) { 
-
-        var image = event.target;
-        
-
-        if (image.getAttribute("data-expanded") === "0") {
-            image.src = '/images/' + fullPathsMap.get(image.id);
-            image.dataset.expanded = "1";
-        } else {
-            image.src = '/images/' + thumbPathsMap.get(image.id);
-            image.dataset.expanded = "0";
-        }
-
-
+var request;
+if (window.XMLHttpRequest) {
+    //New browsers
+    request = new XMLHttpRequest();
     }
-</script>
+else if(window.ActiveXObject) {
+    //Old IE browsers
+    request = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+var ajaxparams = {FileSize: size, FileName: image.id};
+
+
+//console.log(value);
+
+
+if (request != null) {
+    var url = "/LoadImage";
+    request.open("POST", url, true);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onreadystatechange = function() {
+    if (request.readyState == 4 && request.status == 200) {
+        var response = JSON.parse(request.responseText);
+
+        image.src = '/images/' + response;
+
+    if (image.getAttribute("data-expanded") === "0") {
+        image.dataset.expanded = "1";
+    } else {
+        image.dataset.expanded = "0";
+            }   
+        }
+    };
+    request.send(JSON.stringify(ajaxparams));
+    }
+
+}
