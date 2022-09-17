@@ -1,0 +1,105 @@
+﻿@using MvcForum.ViewModels;
+
+
+@model PostViewModel;
+
+@{
+    string WebRootPath = Model.WebRootPath;
+
+
+    if (Model.Post.IsOP)
+    {
+        if (Model.Post.Files.Count == 1)
+        {
+            string imagePath = WebRootPath + "/images/" + Model.Post.Files[0].FullFileName;
+            string imageFileName = System.IO.Path.GetFileName(imagePath);
+
+    <div class = 'OpPost'>
+
+
+                    <div class = 'OpPic'>
+
+                    @{
+                        foreach (var UploadFile in Model.Post.Files)
+                        {
+                            FileViewModel FileView = new FileViewModel(UploadFile, Model.WebRootPath, Model.Post.IsOP);
+
+                            <partial name="_FilePartial" model = "FileView" />
+                        }
+
+                    }
+
+                    </div>
+                    <div class = 'PostInfo'>
+                    @*No Name field in Post model*@
+                    @{
+                    string link = Model.Post.Board + "/threads/" + Model.Post.ThreadId;
+                        }
+                        <span class = 'PostSubject'>@Model.Post.Subject</span>
+                        <span class = 'PosterName'>Anonymous</span>
+                        <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
+                        <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
+                        <span class = 'LinkToThread'><a href = @link>[Reply]</a></span>
+                    </div>
+                    <div class = 'PostText'>
+                        @Html.Raw(Utility.EncodePostText(Model.Post.Text))
+                    </div>
+
+    </div>
+
+        }
+
+    } else //if not OP post
+    {
+        if (Model.Post.Files.Count == 0)
+        {
+    <div class = 'ReplyPost'>
+                    <div class = 'PostInfo'>
+                        <span class = 'PostSubject'>@Model.Post.Subject</span>
+                        <span class = 'PosterName'>Anonymous</span>
+                        <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
+                    </div>
+                    <div class = 'PostText'>
+                        @Html.Raw(Utility.EncodePostText(Model.Post.Text))
+                    </div>
+
+    </div>
+        }
+        else if (Model.Post.Files.Count == 1)
+        {
+            string imagePath = WebRootPath + "/images/" + Model.Post.Files[0].FullFileName;
+            string imageFileName = System.IO.Path.GetFileName(imagePath);
+    <div class = 'ImageReplyPost'>
+
+                    <div class = 'PostInfo'>
+                        <span class = 'PostSubject'>@Model.Post.Subject</span>
+                        <span class = 'PosterName'>Anonymous</span>
+                        <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
+                    </div>
+
+                    <div class = 'ReplyImageTextContainer'>
+
+
+                        @{
+                            foreach (var UploadFile in Model.Post.Files)
+                            {
+                                FileViewModel FileView = new FileViewModel(UploadFile, Model.WebRootPath, Model.Post.IsOP);
+
+                                <partial name="_FilePartial" model = "FileView" />
+                            }
+
+                        }
+
+
+                    <div class = 'PostText'>
+                                            
+                        @Html.Raw(Utility.EncodePostText(Model.Post.Text))
+
+                    </div>
+
+                    </div>
+    </div>
+        }
+    }
+}
+

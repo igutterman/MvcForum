@@ -1,0 +1,17 @@
+﻿@using MvcForum.ViewModels;
+
+@model FileViewModel;
+
+@{
+    string imagePath = Model.WebRootPath + "/images/" + Model.File.FullFileName;
+    string divClass = Model.IsOp ? "FileContainerOP" : "FileContainerReply";
+}
+
+<div class="@divClass">
+
+    <span>File: <a href = @imagePath>@Model.File.UserFileName</a></span>
+    <span>@Utility.GetFileSizeKB(imagePath)KB, @Utility.GetImageWidth(imagePath) x @Utility.GetImageHeight(imagePath)</span>
+
+    <img id = '@Model.File.FullFileName' src = '/images/@Model.File.ThumbFileName' data-expanded = '0' onclick='resizeImage(event)'>
+
+</div>

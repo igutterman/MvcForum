@@ -32,7 +32,6 @@
                         Select File(s)
                     </label>
                     </td>
-                
             </tr>
 
             <input name="current_url" type="hidden"  value="@Context.Request.Path" />
@@ -42,3 +41,34 @@
     </form>
 
 </div>
+
+<div class="FilePreviews">
+
+
+
+    <div id="FilePreview1"></div>
+    <div id="FilePreview2"></div>
+    <div id="FilePreview3"></div>
+    <div id="FilePreview4"></div>
+
+
+
+</div>
+
+<script>
+
+document.getElementById("FileSelector").addEventListener("change", onFileSelected, false);
+
+var tmpElement;
+var file, file_ext, file_path, file_type, file_name;
+var fileCounter;
+
+function show_info_popup() {
+    alert("File is selected... " + "\n name : " + file_name + "\n type : " + file_type + "\n ext : " + file_ext);
+}
+
+function onFileSelected(input) {
+    
+}
+
+</script>

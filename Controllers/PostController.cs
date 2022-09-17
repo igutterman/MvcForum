@@ -159,7 +159,7 @@ namespace MvcForum.Controllers
                 string extension = Path.GetExtension(file.FileName);
 
 
-                //Expend to other filetypes
+                //Expand to other filetypes
                 string[] ValidExtensions = { ".png", ".jpg", ".gif", ".jpeg", ".bmp", ".webp" };
 
                 string[] ImageExtensions = { ".png", ".jpg", ".gif", ".jpeg", ".bmp", ".webp" };

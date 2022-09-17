@@ -11,14 +11,14 @@ namespace MvcForum.ViewModels
         
         public List<ForumThread> Threads { get; set; }
         public string WebRootPath { get; set; }
-        //private readonly IWebHostEnvironment _env;
 
-        public ForumPageViewModel(string webRootPath)
+
+        public ForumPageViewModel(List<ForumThread> threads, string webRootPath)
         {
-            Threads = new List<ForumThread>();
+            Threads = threads;
             WebRootPath = webRootPath;
 
-            //_env = env;
+
         }
     }
 }

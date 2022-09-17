@@ -39,17 +39,21 @@
 
 
 <div class = 'Threads'>
+
+@{
+    Console.WriteLine($"Threads: {Model.Threads.Count}");
+}
+
+
 @foreach (var thread in Model.Threads){
 
-            ThreadViewModel ThreadView = new ThreadViewModel(Model.WebRootPath)
-                {
-                    Thread = thread
-                };
+
+            ThreadViewModel ThreadView = new ThreadViewModel(thread, Model.WebRootPath);
+
             <partial name ="_ThreadPartial" model = "ThreadView" />
             <hr />
 }
 </div>
-
 
 </body>
 
