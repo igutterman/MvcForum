@@ -24,6 +24,15 @@ img {
     table-layout: fixed;
 }
 
+#FilePreviews {
+    margin: auto;
+}
+
+.removeFileButton {
+    height: 24px;
+    width: 24px;
+}
+
 .LabelCell {
     text-align: right;
     background-color: #313370;
