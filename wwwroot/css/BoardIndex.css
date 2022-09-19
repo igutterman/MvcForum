@@ -18,6 +18,11 @@ img {
 
 }
 
+.sage {
+    color: red;
+    font-weight: bold;
+}
+
 
 .PostForm {
     margin: auto;

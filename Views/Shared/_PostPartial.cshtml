@@ -33,13 +33,20 @@
                     <div class = 'PostInfo'>
                     @*No Name field in Post model*@
                     @{
-                    string link = Model.Post.Board + "/threads/" + Model.Post.ThreadId;
+                    string link = "/" + Model.Post.Board + "/threads/" + Model.Post.ThreadId;
+                    Console.WriteLine(Model.Post.Board);
                         }
                         <span class = 'PostSubject'>@Model.Post.Subject</span>
                         <span class = 'PosterName'>Anonymous</span>
                         <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
                         <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
                         <span class = 'LinkToThread'><a href = @link>[Reply]</a></span>
+                    @{
+                        if (Model.Post.Sage)
+                        {
+                            <span class='Sage' color='red' font-weight='bold'>SAGE</span>
+                        }
+                    }
                     </div>
                     <div class = 'PostText'>
                         @Html.Raw(Utility.EncodePostText(Model.Post.Text))
@@ -58,6 +65,13 @@
                         <span class = 'PostSubject'>@Model.Post.Subject</span>
                         <span class = 'PosterName'>Anonymous</span>
                         <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
+                        <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
+                    @{
+                        if (Model.Post.Sage)
+                        {
+                            <span class='Sage' color='red' font-weight='bold'>SAGE</span>
+                        }
+                    }
                     </div>
                     <div class = 'PostText'>
                         @Html.Raw(Utility.EncodePostText(Model.Post.Text))
@@ -75,6 +89,13 @@
                         <span class = 'PostSubject'>@Model.Post.Subject</span>
                         <span class = 'PosterName'>Anonymous</span>
                         <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
+                        <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
+                    @{
+                        if (Model.Post.Sage)
+                        {
+                            <span class='Sage'>SAGE!</span>
+                        }
+                    }
                     </div>
 
                     <div class = 'ReplyImageTextContainer'>

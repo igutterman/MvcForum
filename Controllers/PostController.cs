@@ -156,7 +156,7 @@ namespace MvcForum.Controllers
 
                 
 
-                string extension = Path.GetExtension(file.FileName);
+                string extension = Path.GetExtension(file.FileName).ToLower();
 
 
                 //Expand to other filetypes

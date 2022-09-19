@@ -97,15 +97,7 @@ namespace MvcForum.Controllers
             var threadsView = new ForumPageViewModel(sortedThreads, _env.WebRootPath);
 
 
-            Console.WriteLine($"intcontroller: threads sent to view: {sortedThreads.Count}");
 
-            foreach (ForumThread thread in sortedThreads)
-            {
-                foreach (Post post in thread.Posts)
-                {
-                    Console.WriteLine(post.Text);
-                }
-            }
 
             return View("~/Views/Boards/Int.cshtml", threadsView);
 
