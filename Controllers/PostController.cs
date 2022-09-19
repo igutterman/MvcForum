@@ -57,7 +57,7 @@ namespace MvcForum.Controllers
         //change request size limit to correct size
         [DisableRequestSizeLimit]
         [Route("/Post/AddPost")]
-        public async Task<IActionResult> NewPost(IFormFile file)
+        public async Task<IActionResult> NewPost(List<IFormFile> files)
         {
 
 
@@ -113,7 +113,7 @@ namespace MvcForum.Controllers
             //if op-post, check it has file
             if (isOP)
             {
-                if (file == null)
+                if (files == null)
                 {
                     Console.WriteLine("New threads must have a file");
                     return View("~/Views/Shared/Error.cshtml");
@@ -143,103 +143,124 @@ namespace MvcForum.Controllers
             string ThumbFileName = null;
             
 
+            List<UploadFile> uploadFiles = new List<UploadFile>();
             UploadFile uploadFile = null;
 
-            if (file != null) {
+            Console.WriteLine("here");
+            
+            if (files is null)
+            {
+                Console.WriteLine("files is null");
+            } else
+            {
+                Console.WriteLine("files not null");
+            }
+
+            Console.WriteLine(files.Count);
+
+            if (files != null) {
 
                 HasFile = true;
 
-                uploadFile = new UploadFile();
-                //Validate file type
-
-                userFileName = file.FileName;
-
-                
-
-                string extension = Path.GetExtension(file.FileName).ToLower();
-
-
-                //Expand to other filetypes
-                string[] ValidExtensions = { ".png", ".jpg", ".gif", ".jpeg", ".bmp", ".webp" };
-
-                string[] ImageExtensions = { ".png", ".jpg", ".gif", ".jpeg", ".bmp", ".webp" };
-
-                if (!ValidExtensions.Contains(extension)) {
-
-                    Console.WriteLine($"Filetype: {extension}");
-
-                    Console.WriteLine("Invalid filetype submitted");
-
-                    //Replace this with a custom error view
-                    return View("~/Views/Shared/Error.cshtml");
-                }
-
-
-                //string storageFileName = $@"{Guid.NewGuid().ToString()}{extension}";
-                storageFileName = Guid.NewGuid().ToString() + extension;
-
-                string storagePath = Path.Combine(_env.WebRootPath, "images", storageFileName);
-
-                using (var stream = new FileStream(storagePath, FileMode.Create))
+                foreach (var file in files)
                 {
-                    try
+                    uploadFile = new UploadFile();
+                    //Validate file type
+
+                    userFileName = file.FileName;
+
+
+
+                    string extension = Path.GetExtension(file.FileName).ToLower();
+
+
+                    //Expand to other filetypes
+                    string[] ValidExtensions = { ".png", ".jpg", ".gif", ".jpeg", ".bmp", ".webp" };
+
+                    string[] ImageExtensions = { ".png", ".jpg", ".gif", ".jpeg", ".bmp", ".webp" };
+
+                    if (!ValidExtensions.Contains(extension))
                     {
-                        await file.CopyToAsync(stream);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.ToString());
-                        //Replace this with a custom error view
-                        return View("~/Views/Shared/Error.cshtml");
 
-                    }
-                }
+                        Console.WriteLine($"Filetype: {extension}");
 
+                        Console.WriteLine("Invalid filetype submitted");
 
-                //If image, make thumbnail with max dimensions 250x250
-
-                uploadFile.UserFileName = userFileName;
-                uploadFile.Extension = extension;
-                uploadFile.FullFileName = storageFileName;
-
-                if (ImageExtensions.Contains(extension))
-                {
-                    ThumbFileName = Path.GetFileNameWithoutExtension(storageFileName) + "_thumb" + extension;
-                    string ThumbPath = Path.Combine(_env.WebRootPath, "images", ThumbFileName);
-
-                    try
-                    {
-                        Utility.CreateThumbnail(storagePath, ThumbPath);
-                        uploadFile.ThumbFileName = Path.GetFileNameWithoutExtension(storageFileName) + "_thumb" + extension;
-
-                    } catch (Exception e)
-                    {
-                        Console.WriteLine("Image processing error");
-                        Console.WriteLine(e);
-                        Console.WriteLine(e.Message);
                         //Replace this with a custom error view
                         return View("~/Views/Shared/Error.cshtml");
                     }
 
-                }   
+
+                    //string storageFileName = $@"{Guid.NewGuid().ToString()}{extension}";
+                    storageFileName = Guid.NewGuid().ToString() + extension;
+
+                    string storagePath = Path.Combine(_env.WebRootPath, "images", storageFileName);
+
+                    using (var stream = new FileStream(storagePath, FileMode.Create))
+                    {
+                        try
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                            //Replace this with a custom error view
+                            return View("~/Views/Shared/Error.cshtml");
+
+                        }
+                    }
+
+
+                    //If image, make thumbnail with max dimensions 250x250
+
+                    uploadFile.UserFileName = userFileName;
+                    uploadFile.Extension = extension;
+                    uploadFile.FullFileName = storageFileName;
+
+                    if (ImageExtensions.Contains(extension))
+                    {
+                        ThumbFileName = Path.GetFileNameWithoutExtension(storageFileName) + "_thumb" + extension;
+                        string ThumbPath = Path.Combine(_env.WebRootPath, "images", ThumbFileName);
+
+                        try
+                        {
+                            Utility.CreateThumbnail(storagePath, ThumbPath);
+                            uploadFile.ThumbFileName = Path.GetFileNameWithoutExtension(storageFileName) + "_thumb" + extension;
+
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Image processing error");
+                            Console.WriteLine(e);
+                            Console.WriteLine(e.Message);
+                            //Replace this with a custom error view
+                            return View("~/Views/Shared/Error.cshtml");
+                        }
+
+                    }
 
 
 
-                Console.WriteLine(userFileName);
+                    Console.WriteLine(userFileName);
 
-                Console.WriteLine(storageFileName);
+                    Console.WriteLine(storageFileName);
 
-                Console.WriteLine(storagePath);
+                    Console.WriteLine(storagePath);
+
+                    uploadFiles.Add(uploadFile);
 
 
-                
 
-                
 
-            } else
+                } 
+            }
+            else
             {
                 Console.WriteLine("no file submitted");
             }
+
+
 
             Console.WriteLine($"User IP: {ip}");
 
@@ -267,12 +288,6 @@ namespace MvcForum.Controllers
             Console.WriteLine(PostText);
             Console.WriteLine($"url: {url}");
 
-
-
-
-
-
-            
 
             Console.WriteLine($"Board: {Board}");
 
@@ -324,11 +339,16 @@ namespace MvcForum.Controllers
 
             };
 
-            if (uploadFile is not null)
+            if (uploadFiles.Count > 0)
             {
-                uploadFile.Post = NewPost;
-                NewPost.Files.Add(uploadFile);
-               _context.Files.Add(uploadFile);
+                foreach (var file in uploadFiles)
+                {
+
+
+                    uploadFile.Post = NewPost;
+                    NewPost.Files.Add(file);
+                    _context.Files.Add(file);
+                }
             }
 
             _context.Post.Add(NewPost);

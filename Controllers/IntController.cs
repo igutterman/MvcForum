@@ -64,7 +64,7 @@ namespace MvcForum.Controllers
 
             foreach (Post post in posts)
             {
-                Console.WriteLine(post.Text);
+
 
                 if (!threads.ContainsKey(post.ThreadId))
                 {

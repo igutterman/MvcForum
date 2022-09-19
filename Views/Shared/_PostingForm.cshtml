@@ -9,7 +9,7 @@
             <tr class="SubjectSubmitRow">
                 <td class="LabelCell">Subject</td>
                 <td id="SubjectCell"><input name="Subject" type="text" maxlength="80" placeholder="Subject" style="width: 95%"/></td>
-                <td id="SubmitButtonCell"><input type="Submit" id="SubmitForm" value="Submit" style="width: 100%"/></td>
+                <td id="SubmitButtonCell"><input type="Submit" id="SubmitForm" value="Submit" style="width: 100%" onclick="setInputFileList();"/></td>
             </tr>
             <tr>
                 <td class="LabelCell">Sage</td>
@@ -28,7 +28,7 @@
                 <td class="LabelCell">Files</td>
                 <td colspan="2">
                     <label class="FileInput">
-                        <input name="file" type="file" id="FileSelector"/>
+                        <input name="files" type="file" id="FileSelector" multiple/>
                         Select File(s)
                     </label>
                     <div id="FilePreviews">

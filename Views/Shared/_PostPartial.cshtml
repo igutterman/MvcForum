@@ -9,7 +9,7 @@
 
     if (Model.Post.IsOP)
     {
-        if (Model.Post.Files.Count == 1)
+        if (Model.Post.Files.Count > 0)
         {
             string imagePath = WebRootPath + "/images/" + Model.Post.Files[0].FullFileName;
             string imageFileName = System.IO.Path.GetFileName(imagePath);
@@ -22,6 +22,9 @@
                     @{
                         foreach (var UploadFile in Model.Post.Files)
                         {
+                            Console.WriteLine("here postparial");
+                            Console.WriteLine(UploadFile.FullFileName);
+
                             FileViewModel FileView = new FileViewModel(UploadFile, Model.WebRootPath, Model.Post.IsOP);
 
                             <partial name="_FilePartial" model = "FileView" />
@@ -79,7 +82,7 @@
 
     </div>
         }
-        else if (Model.Post.Files.Count == 1)
+        else if (Model.Post.Files.Count > 0)
         {
             string imagePath = WebRootPath + "/images/" + Model.Post.Files[0].FullFileName;
             string imageFileName = System.IO.Path.GetFileName(imagePath);
