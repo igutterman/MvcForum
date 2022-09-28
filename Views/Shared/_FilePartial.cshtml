@@ -10,7 +10,7 @@
 <div class="@divClass">
 
     <span>File: <a href = @imagePath>@Model.File.UserFileName</a></span>
-    <span>@Utility.GetFileSizeKB(imagePath)KB, @Utility.GetImageWidth(imagePath) x @Utility.GetImageHeight(imagePath)</span>
+    <span>@Utility.GetFileSizeKB(imagePath)KB, @Model.File.Width x @Model.File.Height</span>
 
     <img id = '@Model.File.FullFileName' src = '/images/@Model.File.ThumbFileName' data-expanded = '0' onclick='resizeImage(event)'>
 

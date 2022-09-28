@@ -83,6 +83,9 @@ namespace MvcForum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Height")
+                        .HasColumnType("int");
+
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
@@ -92,6 +95,9 @@ namespace MvcForum.Migrations
                     b.Property<string>("UserFileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Width")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

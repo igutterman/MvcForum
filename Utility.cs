@@ -127,6 +127,14 @@ namespace MvcForum
             }
         }
 
+        public static (int, int) GetImageWidthHeight(string FilePath)
+        {
+            using (var image = SixLabors.ImageSharp.Image.Load(FilePath))
+            {
+                return (image.Width, image.Height);
+            }
+        }
+
 
 
     }

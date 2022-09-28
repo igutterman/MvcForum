@@ -7,6 +7,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using System.Drawing;
 
 namespace MvcForum.Controllers
 {
@@ -201,6 +202,7 @@ namespace MvcForum.Controllers
                         try
                         {
                             await file.CopyToAsync(stream);
+                            
                         }
                         catch (Exception e)
                         {
@@ -226,7 +228,13 @@ namespace MvcForum.Controllers
                         try
                         {
                             Utility.CreateThumbnail(storagePath, ThumbPath);
+                            
                             uploadFile.ThumbFileName = Path.GetFileNameWithoutExtension(storageFileName) + "_thumb" + extension;
+
+                            (int, int) WidthHeight = Utility.GetImageWidthHeight(storagePath);
+                            uploadFile.Width = WidthHeight.Item1;
+                            uploadFile.Height = WidthHeight.Item2;
+
 
                         }
                         catch (Exception e)
@@ -388,13 +396,14 @@ namespace MvcForum.Controllers
 
 
                     OldestThreadId = OldestPost.ThreadId;
+                    Console.WriteLine($"Oldest thread id: {OldestThreadId}");
 
                     //Delete files and entries in file dbset associated with the thread
                     var ThreadPosts = posts.Where(x => x.ThreadId == OldestThreadId);
 
                     foreach (Post post in ThreadPosts)
                     {
-                        if (post.HasImage)
+                        if (post.Files is not null && post.Files.Count > 0)
                         {
                             foreach (UploadFile FileToDelete in post.Files)
                             {
@@ -412,6 +421,7 @@ namespace MvcForum.Controllers
                                 
                             }
                         }
+                        //delete post
                         _context.Remove(post);
                     }
 

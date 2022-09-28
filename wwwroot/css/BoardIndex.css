@@ -15,8 +15,21 @@ body {
 
 img {
     max-width: 90vw;
-
+    
 }
+
+.Files {
+    max-width: 70vw;
+    /*overflow: auto;*/
+}
+
+div.OpPic {
+    display: block;
+    float: left;
+    width: max-content;
+    margin: 10px;
+}
+
 
 .sage {
     color: red;
@@ -112,6 +125,7 @@ textarea[name="PostText"] {
 .Threads {
     display: grid;
     clear: both;
+
 }
 
 .ReplyPost {
@@ -180,11 +194,6 @@ textarea[name="PostText"] {
 
 }
 
-div.OpPic {
-  display: block;
-  float: left;
-  width: max-content;
-}
 
 div.OpPicExpanded {
   display: block;
@@ -195,6 +204,7 @@ div.OpPicExpanded {
 .Thread {
 
   display: block;
+
 }
 
 .OpPost {
