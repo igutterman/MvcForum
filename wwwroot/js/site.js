@@ -8,7 +8,14 @@
 
 function resizeImage(event) { 
 
-var image = event.target;
+    var image = event.target;
+
+    let isOpPic = false;
+    if (image.parentElement.parentElement.parentElement.parentElement.className === "OpPost") {
+        isOpPic = true;
+    }
+
+
 
 var size = "thumb";
 
@@ -46,11 +53,55 @@ if (request != null) {
         image.dataset.expanded = "1";
     } else {
         image.dataset.expanded = "0";
-            }   
+;
         }
+        }
+        if (isOpPic) {
+            checkOPImageSizes(image)
+        }
+    }
     };
     request.send(JSON.stringify(ajaxparams));
+}
+
+
+
+
+
+
+//Takes an OP-image as target. Goes up four levels to get the "OpPost"-class div.
+//Checks if any images in that thread are in expanded state (based on data-expanded property).
+//If so, sets OP-post "PostText" to "clear: both". Otherwise, sets to clear: none
+function checkOPImageSizes(target) {
+    let opPost = target.parentElement.parentElement.parentElement.parentElement;
+    let opText = null;
+    for (var i = 0; i < opPost.childNodes.length; i++) {
+        if (opPost.childNodes[i].className === "PostText") {
+            opText = opPost.childNodes[i];
+            break;
+        }
     }
+
+    let anyExpanded = false;
+    let OPpics = null;
+    for (var i = 0; i < opPost.childNodes.length; i++) {
+        if (opPost.childNodes[i].className === "Files") {
+            OPpics = opPost.childNodes[i].getElementsByTagName('img');
+            break;
+        }
+    }
+    for (var i = 0; i < OPpics.length; i++) {
+        if (OPpics[i].dataset.expanded === "1") {
+            anyExpanded = true;
+        }
+    }
+
+    if (anyExpanded === true) {
+        opText.style.clear = "both";
+    } else {
+        opText.style.clear = "none";
+    }
+
 
 }
 

@@ -13,12 +13,30 @@
         {
             string imagePath = WebRootPath + "/images/" + Model.Post.Files[0].FullFileName;
             string imageFileName = System.IO.Path.GetFileName(imagePath);
+            string link = "/" + Model.Post.Board + "/threads/" + Model.Post.ThreadId;
 
             <div class = 'OpPost'>
-
+            <div class = 'PostInfo'>
+                @*No Name field in Post model*@
+                @{
+                    
+            //Console.WriteLine(Model.Post.Board);
+                    }
+                    <span class = 'PostSubject'>@Model.Post.Subject</span>
+                    <span class = 'PosterName'>Anonymous</span>
+                    <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
+                    <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
+                    <span class = 'LinkToThread'><a href = @link>[Reply]</a></span>
+                @{
+                if (Model.Post.Sage)
+                {
+                            <span class='Sage' color='red' font-weight='bold'>SAGE</span>
+                }
+                }
+            </div>
 
             <div class="Files">
-                @*<div class="OpPic">*@
+
                 @{
 
                     foreach (var UploadFile in Model.Post.Files)
@@ -33,28 +51,11 @@
                     }
 
                 }
-                @*</div>*@
+
             </div>
 
                         
-                        <div class = 'PostInfo'>
-                        @*No Name field in Post model*@
-                        @{
-                    string link = "/" + Model.Post.Board + "/threads/" + Model.Post.ThreadId;
-                    //Console.WriteLine(Model.Post.Board);
-                            }
-                            <span class = 'PostSubject'>@Model.Post.Subject</span>
-                            <span class = 'PosterName'>Anonymous</span>
-                            <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
-                            <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
-                            <span class = 'LinkToThread'><a href = @link>[Reply]</a></span>
-                        @{
-                        if (Model.Post.Sage)
-                        {
-                                    <span class='Sage' color='red' font-weight='bold'>SAGE</span>
-                        }
-                        }
-                        </div>
+
                         <div class = 'PostText'>
                             @Html.Raw(Utility.EncodePostText(Model.Post.Text))
                         </div>
