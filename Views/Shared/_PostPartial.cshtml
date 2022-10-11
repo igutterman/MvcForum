@@ -100,24 +100,30 @@
                             <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
                         @{
                         if (Model.Post.Sage)
-                        {
-                                    <span class='Sage'>SAGE!</span>
-                        }
+                            {
+                                        <span class='Sage'>SAGE!</span>
+                            }
                         }
                         </div>
 
-                        <div class = 'ReplyImageTextContainer'>
 
 
-                            @{
-                            foreach (var UploadFile in Model.Post.Files)
-                            {
+
+                        @{
+                        foreach (var UploadFile in Model.Post.Files)
+
+                            
+                            {   
+                                @:<div class="ReplyPic">
                                 FileViewModel FileView = new FileViewModel(UploadFile, Model.WebRootPath, Model.Post.IsOP);
 
                                         <partial name="_FilePartial" model = "FileView" />
+                                @:</div>
                             }
+                            
 
-                            }
+                        }
+
 
 
                         <div class = 'PostText'>
@@ -126,7 +132,7 @@
 
                         </div>
 
-                        </div>
+
         </div>
             }
         }

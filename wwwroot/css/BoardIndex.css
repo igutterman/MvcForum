@@ -31,6 +31,12 @@ div.OpPic {
     margin: 10px;
 }
 
+div.ReplyPic {
+    display: block;
+    width: max-content;
+
+}
+
 
 .sage {
     color: red;
@@ -129,6 +135,16 @@ textarea[name="PostText"] {
 
 }
 
+@media only screen and (max-width: 600px) {
+    .ReplyPost {
+        min-width: 200px;
+    }
+
+    .ImageReplyPost {
+        min-width: 200px;
+    }
+}
+
 .ReplyPost {
   width: fit-content;
   display: flex;
@@ -147,6 +163,7 @@ textarea[name="PostText"] {
     margin: 10px;
     background-color: #AAAACC !important;
     border-style: solid;
+
 }
 
 .FileContainerReply {
@@ -161,25 +178,7 @@ textarea[name="PostText"] {
     background-color: #DDDDDD;
 }
 
-.ImageReplyPostExpanded {
-  width: max-content;
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-  border-style: solid;
-}
 
-.ReplyImageTextContainerExpanded {
-  display: flex;
-  flex-direction: column;
-}
-
-.ReplyImageTextContainer {
-  display: inline;
-  /*width: 90%;*/
-  /*flex-direction: row;*/
-  /*float: left;*/
-}
 
 .ReplyImage {
   float: left;

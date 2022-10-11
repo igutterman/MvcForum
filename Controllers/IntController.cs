@@ -97,8 +97,6 @@ namespace MvcForum.Controllers
             var threadsView = new ForumPageViewModel(sortedThreads, _env.WebRootPath);
 
 
-
-
             return View("~/Views/Boards/Int.cshtml", threadsView);
 
 

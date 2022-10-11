@@ -7,6 +7,10 @@ namespace MvcForum.ViewModels
         public Post Post { get; set; }
         public string WebRootPath { get; set; }
 
+        //True if model is displayed in index view, false if thread view.
+        //Used to set whether _PostPartial displays link to thread (only in index view)
+        public bool IndexView { get; set; }
+
         public PostViewModel(Post post, string webRootPath)
         {
             Post = post;

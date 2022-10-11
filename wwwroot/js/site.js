@@ -57,6 +57,7 @@ if (request != null) {
         }
         }
         if (isOpPic) {
+            
             checkOPImageSizes(image)
         }
     }
@@ -70,7 +71,7 @@ if (request != null) {
 
 
 //Takes an OP-image as target. Goes up four levels to get the "OpPost"-class div.
-//Checks if any images in that thread are in expanded state (based on data-expanded property).
+//Checks if any OP-post images in that thread are in expanded state (based on data-expanded property).
 //If so, sets OP-post "PostText" to "clear: both". Otherwise, sets to clear: none
 function checkOPImageSizes(target) {
     let opPost = target.parentElement.parentElement.parentElement.parentElement;
