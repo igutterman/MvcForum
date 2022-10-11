@@ -48,7 +48,7 @@
 @foreach (var thread in Model.Threads){
 
 
-            ThreadViewModel ThreadView = new ThreadViewModel(thread, Model.WebRootPath);
+            ThreadViewModel ThreadView = new ThreadViewModel(thread, Model.WebRootPath, true);
 
             <partial name ="_ThreadPartial" model = "ThreadView" />
             <hr />

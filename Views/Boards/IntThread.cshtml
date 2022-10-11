@@ -39,7 +39,7 @@
         @{
             foreach (Post post in Model.Thread)
             {
-                PostViewModel postView = new PostViewModel(post, Model.WebRootPath);
+                PostViewModel postView = new PostViewModel(post, Model.WebRootPath, false);
 
                 <partial name="~/Views/Shared/_PostPartial.cshtml" model="postView" />
             }

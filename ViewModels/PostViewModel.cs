@@ -11,7 +11,7 @@ namespace MvcForum.ViewModels
         //Used to set whether _PostPartial displays link to thread (only in index view)
         public bool IndexView { get; set; }
 
-        public PostViewModel(Post post, string webRootPath)
+        public PostViewModel(Post post, string webRootPath, bool indexView)
         {
             Post = post;
 
@@ -21,6 +21,7 @@ namespace MvcForum.ViewModels
             }
 
             WebRootPath = webRootPath;
+            IndexView = indexView;
         }
 
         public void TruncateFileNames(IList<UploadFile> Files)

@@ -14,10 +14,11 @@ namespace MvcForum.ViewModels
         public bool IndexView { get; set; }
 
 
-        public ThreadViewModel(ForumThread thread, string webRootPath)
+        public ThreadViewModel(ForumThread thread, string webRootPath, bool indexView)
         {
             WebRootPath = webRootPath;
             Thread = thread;
+            IndexView = indexView;
 
         }
 

@@ -18,20 +18,22 @@
             <div class = 'OpPost'>
             <div class = 'PostInfo'>
                 @*No Name field in Post model*@
-                @{
-                    
-            //Console.WriteLine(Model.Post.Board);
-                    }
+
                     <span class = 'PostSubject'>@Model.Post.Subject</span>
                     <span class = 'PosterName'>Anonymous</span>
                     <span class = 'Timestamp'>@Model.Post.Timestamp.ToString()</span>
                     <span class = 'PostNumber'>@Model.Post.IdOnBoard</span>
-                    <span class = 'LinkToThread'><a href = @link>[Reply]</a></span>
+                    
                 @{
-                if (Model.Post.Sage)
-                {
-                            <span class='Sage' color='red' font-weight='bold'>SAGE</span>
-                }
+                    if (Model.IndexView)
+                    {
+                        <span class = 'LinkToThread'><a href = @link>[Reply]</a></span>
+                    }
+
+                    if (Model.Post.Sage)
+                    {
+                                <span class='Sage' color='red' font-weight='bold'>SAGE</span>
+                    }
                 }
             </div>
 
