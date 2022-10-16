@@ -122,6 +122,13 @@ document.getElementById('FileSelector').onchange = function () {
         return;
     }
 
+    if (counter + this.files.length > 4) {
+        alert("Can't post more than 4 files.");
+        setInputFileList();
+        console.log(this.files);
+        return;
+    }
+
     for (let i = 0; i < this.files.length; i++) { 
 
         let src = URL.createObjectURL(this.files[i]);
