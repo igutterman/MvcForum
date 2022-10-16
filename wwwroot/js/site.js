@@ -122,49 +122,52 @@ document.getElementById('FileSelector').onchange = function () {
         return;
     }
 
+    for (let i = 0; i < this.files.length; i++) { 
 
-    let src = URL.createObjectURL(this.files[0]);
-    filesArray.push(this.files[0]);
+        let src = URL.createObjectURL(this.files[i]);
+        filesArray.push(this.files[i]);
 
-    let child = document.createElement("div");
-    child.id = "previews" + counter;
-    child.style.display = "flex";
-    child.style.flexDirection = "column";
-
-
-
-    document.getElementById('FilePreviews').appendChild(child);
-
-    let childspan = document.createElement("span");
-
-    child.appendChild(childspan);
-
-    let button = document.createElement("button");
-    button.type = "button";
-    button.textContent = "X";
-    button.classList.add("removeFileButton");
-    button.id = "button" + counter;
-    button.setAttribute('onclick', 'removeFile(event)');
-    childspan.append(button);
-
-    childspan.append(this.files[0].name);
-
-    let childimg = document.createElement("img");
-
-    childimg.style.maxWidth = 200 + "px";
-    childimg.style.maxHeight = 200 + "px";
-    childimg.style.objectFit = "contain";
-
-    child.appendChild(childimg);
+        let child = document.createElement("div");
+        child.id = "previews" + counter;
+        child.style.display = "flex";
+        child.style.flexDirection = "column";
 
 
-    childimg.src = src;
 
-    counter++;
-    console.log(filesArray);
+        document.getElementById('FilePreviews').appendChild(child);
 
-    console.log("filesarray length:");
-    console.log(filesArray.length);
+        let childspan = document.createElement("span");
+
+        child.appendChild(childspan);
+
+        let button = document.createElement("button");
+        button.type = "button";
+        button.textContent = "X";
+        button.classList.add("removeFileButton");
+        button.id = "button" + counter;
+        button.setAttribute('onclick', 'removeFile(event)');
+        childspan.append(button);
+
+        childspan.append(this.files[i].name);
+
+        let childimg = document.createElement("img");
+
+        childimg.style.maxWidth = 200 + "px";
+        childimg.style.maxHeight = 200 + "px";
+        childimg.style.objectFit = "contain";
+
+        child.appendChild(childimg);
+
+
+        childimg.src = src;
+
+        counter++;
+        console.log(filesArray);
+
+        console.log("filesarray length:");
+        console.log(filesArray.length);
+    }
+
 }
 
 function setInputFileList() {
