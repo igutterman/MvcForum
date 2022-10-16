@@ -92,6 +92,9 @@ namespace MvcForum.Controllers
             foreach (ForumThread thread in sortedThreads)
             {
                 thread.sortPostsByTimestamp();
+
+                //Show OP-post and last three (or fewer) posts:
+
             }
 
             var threadsView = new ForumPageViewModel(sortedThreads, _env.WebRootPath);

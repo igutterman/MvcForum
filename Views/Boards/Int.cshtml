@@ -49,6 +49,7 @@
 
 
             ThreadViewModel ThreadView = new ThreadViewModel(thread, Model.WebRootPath, true);
+            ThreadView.TruncateForIndex();
 
             <partial name ="_ThreadPartial" model = "ThreadView" />
             <hr />

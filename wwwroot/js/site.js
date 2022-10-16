@@ -9,6 +9,7 @@
 function resizeImage(event) { 
 
     var image = event.target;
+    //image.style.opacity = "0.8";
 
     let isOpPic = false;
     if (image.parentElement.parentElement.parentElement.parentElement.className === "OpPost") {
@@ -17,50 +18,50 @@ function resizeImage(event) {
 
 
 
-var size = "thumb";
-
-if (image.getAttribute("data-expanded") === "0") {
-    size = "full";
-    }
-
-var request;
-if (window.XMLHttpRequest) {
-    //New browsers
-    request = new XMLHttpRequest();
-    }
-else if(window.ActiveXObject) {
-    //Old IE browsers
-    request = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-
-var ajaxparams = {FileSize: size, FileName: image.id};
-
-
-//console.log(value);
-
-
-if (request != null) {
-    var url = "/LoadImage";
-    request.open("POST", url, true);
-    request.setRequestHeader("Content-Type", "application/json");
-    request.onreadystatechange = function() {
-    if (request.readyState == 4 && request.status == 200) {
-        var response = JSON.parse(request.responseText);
-
-        image.src = '/images/' + response;
+    var size = "thumb";
 
     if (image.getAttribute("data-expanded") === "0") {
-        image.dataset.expanded = "1";
-    } else {
-        image.dataset.expanded = "0";
-;
+        size = "full";
         }
+
+    var request;
+    if (window.XMLHttpRequest) {
+        //New browsers
+        request = new XMLHttpRequest();
         }
-        if (isOpPic) {
-            
-            checkOPImageSizes(image)
+    else if(window.ActiveXObject) {
+        //Old IE browsers
+        request = new ActiveXObject("Microsoft.XMLHTTP");
         }
-    }
+
+    var ajaxparams = {FileSize: size, FileName: image.id};
+
+
+    //console.log(value);
+
+
+    if (request != null) {
+        var url = "/LoadImage";
+        request.open("POST", url, true);
+        request.setRequestHeader("Content-Type", "application/json");
+        request.onreadystatechange = function() {
+        if (request.readyState == 4 && request.status == 200) {
+            var response = JSON.parse(request.responseText);
+
+            image.src = '/images/' + response;
+            //image.style.opacity = "1";
+
+        if (image.getAttribute("data-expanded") === "0") {
+            image.dataset.expanded = "1";
+        } else {
+            image.dataset.expanded = "0";
+    
+        }
+            }
+            if (isOpPic) {
+                checkOPImageSizes(image)
+            }
+        }
     };
     request.send(JSON.stringify(ajaxparams));
 }

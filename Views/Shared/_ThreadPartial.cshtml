@@ -19,8 +19,13 @@
 
         PostViewModel PostView = new PostViewModel(Post, Model.WebRootPath, Model.IndexView);
 
-        <partial name ="_PostPartial" model = "PostView" />
-    }
+            <partial name ="_PostPartial" model = "PostView" />
+
+            if (Post.IsOP && Model.OmittedPosts > 0)
+            {
+                <span class="OmissionInfo">@Model.OmittedPosts posts omitted.</span>
+            }
+        }
 }
 
 </div>
