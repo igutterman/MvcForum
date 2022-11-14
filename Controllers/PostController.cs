@@ -299,17 +299,24 @@ namespace MvcForum.Controllers
 
             Console.WriteLine($"Board: {Board}");
 
-            int LastPostId = 0;
+            int LastPostId;
+
+            if (_context.Post.Where(x => x.Board.Equals(Board)).FirstOrDefault() is null)
+            {
+                LastPostId = 0;
+            } else
+            {
+                LastPostId = _context.Post.Where(x => x.Board.Equals(Board))
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefault().Id;
+            }
+
+
+            
 
                 //returns null by default, causing exception
-                LastPostId = _context.Post.Where(x => x.Board.Equals(Board))
-                             .OrderByDescending(x => x.Id)
-                             .FirstOrDefault().Id;
 
-                if (LastPostId == null)
-                {
-                    LastPostId = 0;
-                }
+
 
             Console.WriteLine($"Last post ID: {LastPostId}");
             Console.WriteLine($"IsOP: {isOP}");

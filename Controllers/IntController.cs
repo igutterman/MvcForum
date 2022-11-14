@@ -48,6 +48,11 @@ namespace MvcForum.Controllers
                 return View("~/Views/Shared/Error.cshtml");
             }
 
+            if (_context.Post is null)
+            {
+                return View("~/Views/Boards/Int.cshtml");
+            }
+
 
             var posts = _context.Post
                         .Where(x => x.Board == Board)
