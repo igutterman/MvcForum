@@ -87,14 +87,20 @@
                             @Html.Raw(Utility.EncodePostText(Model.Post.Text))
                         </div>
 
-        </div>
-            }
-            else if (Model.Post.Files.Count > 0)
-            {
-                string imagePath = WebRootPath + "/images/" + Model.Post.Files[0].FullFileName;
-                string imageFileName = System.IO.Path.GetFileName(imagePath);
-        <div class = 'ImageReplyPost'>
+            </div>
+        }
+        else if (Model.Post.Files.Count > 0)
+        {
+            string imagePath = WebRootPath + "/images/" + Model.Post.Files[0].FullFileName;
+            string imageFileName = System.IO.Path.GetFileName(imagePath);
 
+
+
+            //string ReplyClass = Model.Post.Files.Count > 2 ? "MultipleImageReplyPost" : "ImageReplyPost";
+            string ReplyClass = "ImageReplyPost";
+
+            <div class = '@ReplyClass'>
+     
                         <div class = 'PostInfo'>
                             <span class = 'PostSubject'>@Model.Post.Subject</span>
                             <span class = 'PosterName'>Anonymous</span>
@@ -103,12 +109,12 @@
                         @{
                         if (Model.Post.Sage)
                             {
-                                        <span class='Sage'>SAGE!</span>
+                                <span class='Sage'>SAGE!</span>
                             }
                         }
                         </div>
 
-
+                        <div>
 
 
                         @{
@@ -125,7 +131,7 @@
                             
 
                         }
-
+                        </div>
 
 
                         <div class = 'PostText'>

@@ -37,24 +37,31 @@
 
 <partial name="~/Views/Shared/_PostingForm.cshtml" />
 
+    @{
 
-<div class = 'Threads'>
+        if (Model.Threads is not null)
+        {
 
-@{
-    Console.WriteLine($"Threads: {Model.Threads.Count}");
+
+            <div class = 'Threads'>
+
+            @{
+                Console.WriteLine($"Threads: {Model.Threads.Count}");
+            }
+
+
+            @foreach (var thread in Model.Threads){
+
+
+                        ThreadViewModel ThreadView = new ThreadViewModel(thread, Model.WebRootPath, true);
+                        ThreadView.TruncateForIndex();
+
+                        <partial name ="_ThreadPartial" model = "ThreadView" />
+                        <hr />
+            }
+            </div>
+        }
 }
-
-
-@foreach (var thread in Model.Threads){
-
-
-            ThreadViewModel ThreadView = new ThreadViewModel(thread, Model.WebRootPath, true);
-            ThreadView.TruncateForIndex();
-
-            <partial name ="_ThreadPartial" model = "ThreadView" />
-            <hr />
-}
-</div>
 
 </body>
 

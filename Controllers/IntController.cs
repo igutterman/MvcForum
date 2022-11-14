@@ -93,7 +93,6 @@ namespace MvcForum.Controllers
             {
                 thread.sortPostsByTimestamp();
 
-                //Show OP-post and last three (or fewer) posts:
 
             }
 

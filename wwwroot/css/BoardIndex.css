@@ -37,7 +37,7 @@ div.OpPic {
 }
 
 div.ReplyPic {
-    display: block;
+    display: inline-block;
     width: max-content;
 
 }
@@ -146,6 +146,11 @@ textarea[name="PostText"] {
 }
 
 @media only screen and (max-width: 600px) {
+
+    .OpPost{
+        min-width: 200px;
+    }
+
     .ReplyPost {
         min-width: 200px;
     }
@@ -174,6 +179,16 @@ textarea[name="PostText"] {
     background-color: #AAAACC !important;
     padding: 5px;
 
+}
+
+.MultipleImageReplyPost {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    background-color: #AAAACC !important;
+    padding: 5px;
+    clear: both;
 }
 
 .FileContainerReply {

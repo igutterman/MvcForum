@@ -23,7 +23,14 @@
 
             if (Post.IsOP && Model.OmittedPosts > 0)
             {
-                <span class="OmissionInfo">@Model.OmittedPosts posts omitted.</span>
+                if (Model.OmittedPosts == 1)
+                {
+                    <span class="OmissionInfo">@Model.OmittedPosts post omitted.</span>
+                } else
+                {
+                    <span class="OmissionInfo">@Model.OmittedPosts posts omitted.</span>
+                }
+
             }
         }
 }
