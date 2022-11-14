@@ -52,11 +52,7 @@
 
             @foreach (var thread in Model.Threads){
 
-
-                        ThreadViewModel ThreadView = new ThreadViewModel(thread, Model.WebRootPath, true);
-                        ThreadView.TruncateForIndex();
-
-                        <partial name ="_ThreadPartial" model = "ThreadView" />
+                        <partial name ="_ThreadPartial" model = "thread" />
                         <hr />
             }
             </div>
