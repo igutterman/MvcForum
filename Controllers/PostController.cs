@@ -114,7 +114,7 @@ namespace MvcForum.Controllers
             //if op-post, check it has file
             if (isOP)
             {
-                if (files == null)
+                if (files.Count == 0)
                 {
                     Console.WriteLine("New threads must have a file");
                     return View("~/Views/Shared/Error.cshtml");
